@@ -4,6 +4,13 @@
   <artifactId>WebSocketRemote</artifactId>
   <name>WebSocketRemote</name>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  	  <groupId>commons-codec</groupId>
+  	  <artifactId>commons-codec</artifactId>
+  	  <version>1.1</version>
+  	</dependency>
+  </dependencies>
   <properties>
     <package.package-name>com.kanasansoft.Jyazo</package.package-name>
     <package.main-class>${package.package-name}.${name}</package.main-class>
@@ -13,9 +20,9 @@
     <package.app-name>${package.base-name}.app</package.app-name>
   </properties>
   <scm>
-	<connection>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</connection>
-	<url>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</url>
-	<developerConnection>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</developerConnection>	
+    <connection>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</connection>
+    <url>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</url>
+    <developerConnection>scm:git:git@github.com:Kanasansoft/WebSocketRemote.git</developerConnection>	
   </scm>
   <build>
     <plugins>
