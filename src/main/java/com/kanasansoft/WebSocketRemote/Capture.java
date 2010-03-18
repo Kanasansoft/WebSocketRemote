@@ -6,7 +6,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -30,6 +30,8 @@ public class Capture {
 		System.out.println(rect);
 		Robot robot = new Robot();
 		BufferedImage bf = robot.createScreenCapture(rect);
-		ImageIO.write(bf,"png",new File("test.png"));
+		ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+		ImageIO.write(bf,"png",byteArrayOS);
+		byte[] bytes = byteArrayOS.toByteArray();
 	}
 }
