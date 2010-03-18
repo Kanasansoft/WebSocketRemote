@@ -7,10 +7,13 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import org.apache.commons.codec.binary.Base64;
 
 public class Capture {
 
@@ -33,5 +36,18 @@ public class Capture {
 		ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
 		ImageIO.write(bf,"png",byteArrayOS);
 		byte[] bytes = byteArrayOS.toByteArray();
+		byte[] encoded = Base64.encodeBase64(bytes);
+/*
+		StringBuffer buffer=new StringBuffer();
+		for(int i=0;i<encoded.length;i++){
+			buffer.append(Integer.toString(encoded[i],16));
+		}
+		System.out.println(buffer.toString());
+*/
+		File file = new File("base64.txt");
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.write(encoded);
+		fos.close();
+
 	}
 }
