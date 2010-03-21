@@ -11,8 +11,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import com.sun.imageio.plugins.png.*;
+
 import org.apache.commons.codec.binary.Base64;
 
 public class Capture {
@@ -32,11 +39,30 @@ public class Capture {
 		}
 		Robot robot = new Robot();
 		BufferedImage bf = robot.createScreenCapture(rect);
+		IIOImage iioi = new IIOImage(bf,null,null);
+		ImageWriter iw = null;
+		Iterator<ImageWriter> iwi = ImageIO.getImageWritersByFormatName("png");
+		if(iwi.hasNext()){
+			iw = iwi.next();
+		}
+		if(iw==null){
+			System.exit(0);
+		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(bf,"png",baos);
+		ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
+		iw.setOutput(ios);
+		ImageWriteParam iwp = iw.getDefaultWriteParam();
+//		PNGImageWriteParam iwp = new PNGImageWriteParam();
+//		ImageWriteParam iwp = new ImageWriteParam(null);
+		iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+		iwp.setCompressionQuality(0.1F);
+		iw.write(null,iioi,iwp);
+//		ImageIO.write(bf,"png",baos);
+
 		byte[] bytes = baos.toByteArray();
 		byte[] base64 = Base64.encodeBase64(bytes);
 		String encoded = new String(base64);
+		System.out.println(encoded.length());
 /*
 		File file = new File("base64.txt");
 		FileOutputStream fos = new FileOutputStream(file);
