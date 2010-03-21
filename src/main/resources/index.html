@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<style>
+body{overflow:hidden;margin:0px;}
+</style>
+<script>
+var browser;
+var remote;
+function scrollDisplay(eve){
+//var x=eve.x/remote.offsetWidth*(remote.offsetWidth-browser.clientWidth);
+//var y=eve.y/remote.offsetHeight*browser.clientHeight;
+var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
+var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
+console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve.y,browser.clientHeight,remote.offsetHeight);
+scrollTo(x,y);
+}
+function initial(eve){
+	browser=document.documentElement;
+	remote=document.getElementById("remote");
+	browser.addEventListener("mousemove",scrollDisplay,false);
+}
+window.addEventListener("load",initial,false);
+</script>
+</head>
+<body>
+<img id="remote" src="splash.png" />
+</body>
+</html>
