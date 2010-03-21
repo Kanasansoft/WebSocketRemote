@@ -30,24 +30,18 @@ public class Capture {
 		for(int i=0;i<gds.length;i++){
 			rect.add(gds[i].getDefaultConfiguration().getBounds());
 		}
-		System.out.println(rect);
 		Robot robot = new Robot();
 		BufferedImage bf = robot.createScreenCapture(rect);
-		ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-		ImageIO.write(bf,"png",byteArrayOS);
-		byte[] bytes = byteArrayOS.toByteArray();
-		byte[] encoded = Base64.encodeBase64(bytes);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(bf,"png",baos);
+		byte[] bytes = baos.toByteArray();
+		byte[] base64 = Base64.encodeBase64(bytes);
+		String encoded = new String(base64);
 /*
-		StringBuffer buffer=new StringBuffer();
-		for(int i=0;i<encoded.length;i++){
-			buffer.append(Integer.toString(encoded[i],16));
-		}
-		System.out.println(buffer.toString());
-*/
 		File file = new File("base64.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(encoded);
 		fos.close();
-
+*/
 	}
 }
