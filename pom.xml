@@ -5,7 +5,7 @@
   <name>WebSocketRemote</name>
   <version>0.0.1-SNAPSHOT</version>
   <properties>
-    <package.package-name>com.kanasansoft.Jyazo</package.package-name>
+    <package.package-name>com.kanasansoft.WebSocketRemote</package.package-name>
     <package.main-class>${package.package-name}.${name}</package.main-class>
     <package.base-name>${name}-${version}</package.base-name>
     <package.jar-name>${package.base-name}.jar</package.jar-name>
@@ -116,10 +116,30 @@
     </plugins>
   </build>
   <dependencies>
-  	<dependency>
-  	  <groupId>commons-codec</groupId>
-  	  <artifactId>commons-codec</artifactId>
-  	  <version>1.1</version>
-  	</dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>7.0.1.v20091125</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <version>7.0.1.v20091125</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>7.0.1.v20091125</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-websocket</artifactId>
+      <version>7.0.1.v20091125</version>
+    </dependency>
   </dependencies>
 </project>
