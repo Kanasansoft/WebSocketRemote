@@ -1,6 +1,10 @@
 package com.kanasansoft.WebSocketRemote;
 
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -33,6 +37,14 @@ public class WebSocketRemote {
 		server.setHandler(handlerList);
 		server.start();
 		server.join();
+
+		SystemTray systemTray = java.awt.SystemTray.getSystemTray();
+		URL imageUrl = this.getClass().getClassLoader().getResource("images/icon.png");
+		TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage(imageUrl));
+		trayIcon.setImageAutoSize(true);
+		trayIcon.setToolTip("WebSocketRemote");
+		systemTray.add(trayIcon);
+
 	}
 
 	class WSServlet extends WebSocketServlet {
