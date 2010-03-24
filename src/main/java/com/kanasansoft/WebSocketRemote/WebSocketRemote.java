@@ -23,7 +23,8 @@ public class WebSocketRemote {
 	public WebSocketRemote() throws Exception {
 		Server server = new Server(8088);
 		ResourceHandler resourceHandler = new ResourceHandler();
-		resourceHandler.setResourceBase(this.getClass().getClassLoader().getResource("html").toExternalForm());
+		String htmlPath = this.getClass().getClassLoader().getResource("html").toExternalForm();
+		resourceHandler.setResourceBase(htmlPath);
 		WSServlet wsServlet = new WSServlet();
 		ServletHandler wsServletHandler = new ServletHandler();
 		wsServletHandler.addServlet(new ServletHolder(wsServlet));
