@@ -1,8 +1,12 @@
 package com.kanasansoft.WebSocketRemote;
 
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
@@ -36,13 +40,26 @@ public class WebSocketRemote {
 		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletHandler});
 		server.setHandler(handlerList);
 		server.start();
-		server.join();
+//		server.join();
 
-		SystemTray systemTray = java.awt.SystemTray.getSystemTray();
+		MenuItem quitMenuItem = new MenuItem("Quit");
+		quitMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
+		PopupMenu popupMenu = new PopupMenu();
+		popupMenu.add(quitMenuItem);
+
 		URL imageUrl = this.getClass().getClassLoader().getResource("images/icon.png");
 		TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().createImage(imageUrl));
 		trayIcon.setImageAutoSize(true);
 		trayIcon.setToolTip("WebSocketRemote");
+		trayIcon.setPopupMenu(popupMenu);
+
+		SystemTray systemTray = java.awt.SystemTray.getSystemTray();
 		systemTray.add(trayIcon);
 
 	}
