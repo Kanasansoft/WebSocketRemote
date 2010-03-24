@@ -1,19 +1,28 @@
 package com.kanasansoft.WebSocketRemote;
 
+import java.awt.AWTException;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -64,6 +73,41 @@ public class WebSocketRemote {
 
 	}
 
+	class Capture extends Thread {
+		private String encoded = null;
+		@Override
+		public void run() {
+			try{
+				while(true){
+					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					GraphicsDevice[] gds = ge.getScreenDevices();
+					Rectangle rect=new Rectangle(0,0,-1,-1);
+					for(int i=0;i<gds.length;i++){
+						rect.add(gds[i].getDefaultConfiguration().getBounds());
+					}
+					Robot robot = new Robot();
+					BufferedImage bf = robot.createScreenCapture(rect);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(bf,"png",baos);
+					byte[] bytes = baos.toByteArray();
+					byte[] base64 = Base64.encodeBase64(bytes);
+					encoded = new String(base64);
+					sleep(500);
+				}
+			} catch (AWTException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+		String getCaptureString(){
+			return encoded;
+		}
+	}
+
 	class WSServlet extends WebSocketServlet {
 		@Override
 		protected WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
@@ -110,4 +154,5 @@ public class WebSocketRemote {
 			}
 		}
 	}
+
 }
