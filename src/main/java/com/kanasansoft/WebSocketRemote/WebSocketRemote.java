@@ -74,7 +74,7 @@ public class WebSocketRemote {
 	}
 
 	class Capture extends Thread {
-		private String encoded = null;
+		private ScreenData screenData = new ScreenData();
 		@Override
 		public void run() {
 			try{
@@ -91,7 +91,8 @@ public class WebSocketRemote {
 					ImageIO.write(bf,"png",baos);
 					byte[] bytes = baos.toByteArray();
 					byte[] base64 = Base64.encodeBase64(bytes);
-					encoded = new String(base64);
+					String encoded = new String(base64);
+					screenData.set(encoded, rect);
 					sleep(500);
 				}
 			} catch (AWTException e) {
@@ -103,8 +104,30 @@ public class WebSocketRemote {
 			}
 			System.exit(1);
 		}
-		String getCaptureString(){
-			return encoded;
+		ScreenData getCaptureString(){
+			return screenData.get();
+		}
+		class ScreenData {
+			String encoded = null;
+			Rectangle rect = null;
+			public ScreenData() {
+				this.encoded = null;
+				this.rect = null;
+			}
+			public ScreenData(String encoded, Rectangle rect) {
+				this.encoded = new String(encoded);
+				this.rect = new Rectangle(rect.x, rect.y, rect.width, rect.height);
+			}
+			synchronized void set(String base64, Rectangle rect) {
+				this.encoded = base64;
+				this.rect = rect;
+			}
+			synchronized ScreenData get() {
+				if(this.encoded==null||this.rect==null){
+					return null;
+				}
+				return new ScreenData(this.encoded, this.rect);
+			}
 		}
 	}
 
