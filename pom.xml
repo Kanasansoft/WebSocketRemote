@@ -65,6 +65,7 @@
         <configuration>
           <mainClass>${package.main-class}</mainClass>
           <jvmVersion>1.6+</jvmVersion>
+          <iconFile>target${file.separator}classes${file.separator}images${file.separator}macintosh.icns</iconFile>
         </configuration>
         <executions>
           <execution>
@@ -85,6 +86,9 @@
               <headerType>GUI</headerType>
               <jar>target${file.separator}${package.jar-name}</jar>
               <outfile>target${file.separator}${package.exe-name}</outfile>
+              <customProcName>${name}</customProcName>
+              <errTitle>${name}</errTitle>
+              <icon>target${file.separator}classes${file.separator}images${file.separator}windows.ico</icon>
               <jre>
                 <minVersion>1.6.0</minVersion>
               </jre>
