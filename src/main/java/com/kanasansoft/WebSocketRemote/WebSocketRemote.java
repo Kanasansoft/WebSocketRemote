@@ -158,7 +158,7 @@ public class WebSocketRemote {
 		@Override
 		public void onMessage(byte frame, byte[] data, int offset, int length) {
 		}
-		public void onMessageAll(byte frame, String data) {
+		static public void sendMessageAll(byte frame, String data) {
 			for(WebSocketDesktop client : clients){
 				try {
 					client.outbound.sendMessage(frame, data);
@@ -167,7 +167,7 @@ public class WebSocketRemote {
 				}
 			}
 		}
-		public void onMessageAll(byte frame, byte[] data, int offset, int length) {
+		static public void sendMessageAll(byte frame, byte[] data, int offset, int length) {
 			for(WebSocketDesktop client : clients){
 				try {
 					client.outbound.sendMessage(frame, data, offset, length);
