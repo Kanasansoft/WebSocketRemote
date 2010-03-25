@@ -7,6 +7,7 @@ body{overflow:hidden;margin:0px;}
 <script>
 var browser;
 var remote;
+var webSocket;
 function scrollDisplay(eve){
 //var x=eve.x/remote.offsetWidth*(remote.offsetWidth-browser.clientWidth);
 //var y=eve.y/remote.offsetHeight*browser.clientHeight;
@@ -15,10 +16,22 @@ var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
 console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve.y,browser.clientHeight,remote.offsetHeight);
 scrollTo(x,y);
 }
+function getMessage(message){
+	remote.src=message;
+}
+function closeWebSocket(){
+	webSocket.close();
+}
 function initial(eve){
 	browser=document.documentElement;
 	remote=document.getElementById("remote");
 	browser.addEventListener("mousemove",scrollDisplay,false);
+	var protocol=(location.protocol=="https:")?"wss":"ws";
+	var host=location.host;
+	var port=(/^\d+$/.test(location.port))?location.port:"80";
+	webSocket=new WebSocket(protocol+"://"+host+":"+port+"/");
+	webSocket.addEventListener("message",getMessage,false);
+	window.addEventListener("unload",closeWebSocket,false);
 }
 window.addEventListener("load",initial,false);
 </script>
