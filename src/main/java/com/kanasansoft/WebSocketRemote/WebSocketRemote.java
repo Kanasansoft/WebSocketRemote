@@ -31,25 +31,13 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketServlet;
-public class WebSocketRemote {
+public class WebSocketRemote implements OnMessageObserver{
 
 	public static void main(String[] args) throws Exception {
 		new WebSocketRemote();
 	}
 
 	public WebSocketRemote() throws Exception {
-		Server server = new Server(8088);
-		ResourceHandler resourceHandler = new ResourceHandler();
-		String htmlPath = this.getClass().getClassLoader().getResource("html").toExternalForm();
-		resourceHandler.setResourceBase(htmlPath);
-		WSServlet wsServlet = new WSServlet();
-		ServletHandler wsServletHandler = new ServletHandler();
-		wsServletHandler.addServlet(new ServletHolder(wsServlet));
-		HandlerList handlerList = new HandlerList();
-		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletHandler});
-		server.setHandler(handlerList);
-		server.start();
-//		server.join();
 
 		MenuItem quitMenuItem = new MenuItem("Quit");
 		quitMenuItem.addActionListener(new ActionListener() {
@@ -71,6 +59,26 @@ public class WebSocketRemote {
 		SystemTray systemTray = java.awt.SystemTray.getSystemTray();
 		systemTray.add(trayIcon);
 
+		Server server = new Server(8088);
+		ResourceHandler resourceHandler = new ResourceHandler();
+		String htmlPath = this.getClass().getClassLoader().getResource("html").toExternalForm();
+		resourceHandler.setResourceBase(htmlPath);
+		WSServlet wsServlet = new WSServlet(this);
+		ServletHandler wsServletHandler = new ServletHandler();
+		wsServletHandler.addServlet(new ServletHolder(wsServlet));
+		HandlerList handlerList = new HandlerList();
+		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletHandler});
+		server.setHandler(handlerList);
+		server.start();
+
+	}
+
+	@Override
+	public void onMessage(byte frame, String data) {
+	}
+
+	@Override
+	public void onMessage(byte frame, byte[] data, int offset, int length) {
 	}
 
 	class Capture extends Thread {
@@ -132,15 +140,25 @@ public class WebSocketRemote {
 	}
 
 	class WSServlet extends WebSocketServlet {
+		OnMessageObserver onMessageObserver = null;
+		public WSServlet(OnMessageObserver onMessageObserver) {
+			super();
+			this.onMessageObserver = onMessageObserver;
+		}
 		@Override
 		protected WebSocket doWebSocketConnect(HttpServletRequest request, String protocol) {
-			return new WebSocketDesktop();
+			return new WebSocketDesktop(onMessageObserver);
 		}
 	}
 
 	static class WebSocketDesktop implements WebSocket {
+		OnMessageObserver onMessageObserver = null;
 		static Set<WebSocketDesktop> clients = new CopyOnWriteArraySet<WebSocketDesktop>();
 		Outbound outbound;
+		public WebSocketDesktop(OnMessageObserver onMessageObserver) {
+			super();
+			this.onMessageObserver = onMessageObserver;
+		}
 		@Override
 		public void onConnect(Outbound outbound) {
 			System.out.println("connect : "+this);
@@ -154,9 +172,11 @@ public class WebSocketRemote {
 		}
 		@Override
 		public void onMessage(byte frame, String data) {
+			onMessageObserver.onMessage(frame, data);
 		}
 		@Override
 		public void onMessage(byte frame, byte[] data, int offset, int length) {
+			onMessageObserver.onMessage(frame, data, offset, length);
 		}
 		static public void sendMessageAll(byte frame, String data) {
 			for(WebSocketDesktop client : clients){
