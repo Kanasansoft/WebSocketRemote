@@ -28,8 +28,8 @@ function initial(eve){
 	browser.addEventListener("mousemove",scrollDisplay,false);
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
-	var port=(/^\d+$/.test(location.port))?location.port:"80";
-	webSocket=new WebSocket(protocol+"://"+host+":"+port+"/");
+	console.log(protocol+"://"+host+"/");
+	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("message",getMessage,false);
 	window.addEventListener("unload",closeWebSocket,false);
 }

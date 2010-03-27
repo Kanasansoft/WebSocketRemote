@@ -13,10 +13,12 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 public class WebSocketRemote implements OnMessageObserver{
+
+	ScreenData screenData = null;
 
 	public static void main(String[] args) throws Exception {
 		new WebSocketRemote();
@@ -45,14 +47,19 @@ public class WebSocketRemote implements OnMessageObserver{
 		systemTray.add(trayIcon);
 
 		Server server = new Server(8088);
+
 		ResourceHandler resourceHandler = new ResourceHandler();
 		String htmlPath = this.getClass().getClassLoader().getResource("html").toExternalForm();
 		resourceHandler.setResourceBase(htmlPath);
+
 		WSServlet wsServlet = new WSServlet(this);
-		ServletHandler wsServletHandler = new ServletHandler();
-		wsServletHandler.addServlet(new ServletHolder(wsServlet));
+		ServletContextHandler wsServletContextHandler = new ServletContextHandler();
+		wsServletContextHandler.setContextPath("/");
+		server.setHandler(wsServletContextHandler);
+		wsServletContextHandler.addServlet(new ServletHolder(wsServlet), "/ws/*");
+
 		HandlerList handlerList = new HandlerList();
-		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletHandler});
+		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletContextHandler});
 		server.setHandler(handlerList);
 		server.start();
 
