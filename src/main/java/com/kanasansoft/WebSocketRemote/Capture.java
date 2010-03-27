@@ -44,7 +44,7 @@ class Capture extends Thread {
 		}
 		System.exit(1);
 	}
-	ScreenData getCaptureString(){
+	ScreenData getScreenData(){
 		return screenData.get();
 	}
 }
