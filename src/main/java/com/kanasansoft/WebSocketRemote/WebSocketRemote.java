@@ -56,8 +56,9 @@ public class WebSocketRemote implements OnMessageObserver{
 		ServletContextHandler wsServletContextHandler = new ServletContextHandler();
 		wsServletContextHandler.setContextPath("/");
 		server.setHandler(wsServletContextHandler);
-		wsServletContextHandler.addServlet(new ServletHolder(wsServlet), "/ws/*");
-
+		ServletHolder wsServletHolder = new ServletHolder(wsServlet);
+		wsServletHolder.setInitParameter("bufferSize", Integer.toString(8192*128,10));
+		wsServletContextHandler.addServlet(wsServletHolder, "/ws/*");
 		HandlerList handlerList = new HandlerList();
 		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletContextHandler});
 		server.setHandler(handlerList);
