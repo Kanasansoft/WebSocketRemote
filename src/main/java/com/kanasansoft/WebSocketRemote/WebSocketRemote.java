@@ -71,9 +71,9 @@ public class WebSocketRemote implements OnMessageObserver{
 		while(true){
 			screenData = capture.getScreenData();
 			if(screenData!=null){
-				String encoded = screenData.encoded;
-				if(encoded!=null){
-					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, encoded);
+				byte[] base64 = screenData.base64;
+				if(base64!=null){
+					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, base64,0,base64.length);
 				}
 			}
 			Thread.sleep(1000);

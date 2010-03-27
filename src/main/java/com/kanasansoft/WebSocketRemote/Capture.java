@@ -31,8 +31,7 @@ class Capture extends Thread {
 				ImageIO.write(bf,"png",baos);
 				byte[] bytes = baos.toByteArray();
 				byte[] base64 = Base64.encodeBase64(bytes);
-				String encoded = new String(base64);
-				screenData.set("data:image/png;base64,"+encoded, rect);
+				screenData.set(base64, rect);
 				sleep(500);
 			}
 		} catch (AWTException e) {

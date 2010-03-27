@@ -17,7 +17,7 @@ console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve
 scrollTo(x,y);
 }
 function getMessage(message){
-	remote.src=message.data;
+	remote.src="data:image/png;base64,"+message.data;
 }
 function closeWebSocket(){
 	webSocket.close();
