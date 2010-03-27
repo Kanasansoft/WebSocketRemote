@@ -15,6 +15,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.websocket.WebSocket;
 
 public class WebSocketRemote implements OnMessageObserver{
 
@@ -72,7 +73,7 @@ public class WebSocketRemote implements OnMessageObserver{
 			if(screenData!=null){
 				String encoded = screenData.encoded;
 				if(encoded!=null){
-					WebSocketDesktop.sendMessageAll((byte)0, encoded);
+					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, encoded);
 				}
 			}
 			Thread.sleep(1000);
