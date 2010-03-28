@@ -8,6 +8,7 @@ body{overflow:hidden;margin:0px;}
 var browser;
 var remote;
 var webSocket;
+var receiveData;
 function scrollDisplay(eve){
 //var x=eve.x/remote.offsetWidth*(remote.offsetWidth-browser.clientWidth);
 //var y=eve.y/remote.offsetHeight*browser.clientHeight;
@@ -17,7 +18,33 @@ console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve
 scrollTo(x,y);
 }
 function getMessage(message){
-	remote.src="data:image/png;base64,"+message.data;
+//	console.log(message.data.length);
+//	remote.src="data:image/png;base64,"+message.data;
+	var data=message.data;
+	while(data.length!=0){
+		var startPosition=data.indexOf("^");
+		var endPosition=data.indexOf("$");
+		if(startPosition==-1){
+			startPosition=Number.POSITIVE_INFINITY;
+		}
+		if(endPosition==-1){
+			endPosition=Number.POSITIVE_INFINITY;
+		}
+		var splitPosition=Math.min(startPosition,endPosition);
+		if(splitPosition==Number.POSITIVE_INFINITY){
+			receiveData+=data;
+			data="";
+		}else if(startPosition<endPosition){
+			receiveData="";
+			data=data.slice(splitPosition+1);
+		}else if(startPosition>endPosition){
+			receiveData+=data.slice(0,splitPosition);
+			data=data.slice(splitPosition+1);
+			remote.src="data:image/png;base64,"+receiveData;
+//			console.log("+++"+receiveData.length);
+			data="";
+		}
+	}
 }
 function closeWebSocket(){
 	webSocket.close();

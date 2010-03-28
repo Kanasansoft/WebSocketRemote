@@ -32,7 +32,7 @@ class Capture extends Thread {
 				byte[] bytes = baos.toByteArray();
 				byte[] base64 = Base64.encodeBase64(bytes);
 				screenData.set(base64, rect);
-				sleep(500);
+				sleep(0);
 			}
 		} catch (AWTException e) {
 			e.printStackTrace();

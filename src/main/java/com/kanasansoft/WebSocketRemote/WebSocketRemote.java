@@ -8,6 +8,7 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -68,15 +69,24 @@ public class WebSocketRemote implements OnMessageObserver{
 		Capture capture = new Capture();
 		capture.start();
 
+		byte startByte = "^".getBytes()[0];
+		byte endByte = "$".getBytes()[0];
+
 		while(true){
 			screenData = capture.getScreenData();
 			if(screenData!=null){
 				byte[] base64 = screenData.base64;
 				if(base64!=null){
-					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, base64,0,base64.length);
+//					System.out.println(base64.length);
+//					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, base64,0,base64.length);
+					byte[] sendArray = new byte[base64.length+2];
+				    System.arraycopy(base64, 0, sendArray, 1,base64.length);
+				    sendArray[0] = startByte;
+				    sendArray[sendArray.length-1] = endByte;
+					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, sendArray,0,sendArray.length);
 				}
 			}
-			Thread.sleep(1000);
+			Thread.sleep(5000);
 		}
 
 	}
