@@ -30,16 +30,15 @@ function getMessage(message){
 		if(endPosition==-1){
 			endPosition=Number.POSITIVE_INFINITY;
 		}
-		var splitPosition=Math.min(startPosition,endPosition);
-		if(splitPosition==Number.POSITIVE_INFINITY){
+		if(Math.min(startPosition,endPosition)==Number.POSITIVE_INFINITY){
 			receiveData+=data;
 			data="";
 		}else if(startPosition<endPosition){
 			receiveData="";
-			data=data.slice(splitPosition+1);
+			data=data.slice(startPosition+1);
 		}else if(startPosition>endPosition){
-			receiveData+=data.slice(0,splitPosition);
-			data=data.slice(splitPosition+1);
+			receiveData+=data.slice(0,endPosition);
+			data=data.slice(endPosition+1);
 			remote.src="data:image/png;base64,"+receiveData;
 //			console.log("+++"+receiveData.length);
 			data="";
