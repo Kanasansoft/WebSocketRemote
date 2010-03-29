@@ -39,7 +39,14 @@ function getMessage(message){
 		}else if(startPosition>endPosition){
 			receiveData+=data.slice(0,endPosition);
 			data=data.slice(endPosition+1);
-			remote.src="data:image/png;base64,"+receiveData;
+			var separatorPosition=receiveData.indexOf("_");
+			if(separatorPosition!=-1){
+				var dataLength=parseInt(receiveData.slice(0,separatorPosition),16);
+				var base64=receiveData.slice(separatorPosition+1);
+				if(dataLength==base64.length){
+					remote.src="data:image/png;base64,"+base64;
+				}
+			}
 //			console.log("+++"+receiveData.length);
 			data="";
 		}

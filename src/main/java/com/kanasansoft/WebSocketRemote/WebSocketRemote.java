@@ -71,6 +71,7 @@ public class WebSocketRemote implements OnMessageObserver{
 
 		byte startByte = "^".getBytes()[0];
 		byte endByte = "$".getBytes()[0];
+		byte separatorByte = "_".getBytes()[0];
 
 		while(true){
 			screenData = capture.getScreenData();
@@ -79,10 +80,13 @@ public class WebSocketRemote implements OnMessageObserver{
 				if(base64!=null){
 //					System.out.println(base64.length);
 //					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, base64,0,base64.length);
-					byte[] sendArray = new byte[base64.length+2];
-				    System.arraycopy(base64, 0, sendArray, 1,base64.length);
+					byte[] dataLength = Integer.toString(base64.length, 16).getBytes();
+					byte[] sendArray = new byte[base64.length+dataLength.length+3];
+				    System.arraycopy(dataLength, 0, sendArray, 1,dataLength.length);
+				    System.arraycopy(base64, 0, sendArray, dataLength.length+2,base64.length);
 				    sendArray[0] = startByte;
 				    sendArray[sendArray.length-1] = endByte;
+				    sendArray[dataLength.length+1] = separatorByte;
 					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, sendArray,0,sendArray.length);
 				}
 			}
