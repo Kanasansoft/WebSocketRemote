@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -59,7 +60,7 @@ public class WebSocketRemote implements OnMessageObserver{
 		wsServletContextHandler.setContextPath("/");
 		server.setHandler(wsServletContextHandler);
 		ServletHolder wsServletHolder = new ServletHolder(wsServlet);
-		wsServletHolder.setInitParameter("bufferSize", Integer.toString(8192*128,10));
+//		wsServletHolder.setInitParameter("bufferSize", Integer.toString(8192*128,10));
 		wsServletContextHandler.addServlet(wsServletHolder, "/ws/*");
 		HandlerList handlerList = new HandlerList();
 		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletContextHandler});
@@ -80,6 +81,7 @@ public class WebSocketRemote implements OnMessageObserver{
 				if(base64!=null){
 //					System.out.println(base64.length);
 //					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, base64,0,base64.length);
+/*
 					byte[] dataLength = Integer.toString(base64.length, 16).getBytes();
 					byte[] sendArray = new byte[base64.length+dataLength.length+3];
 				    System.arraycopy(dataLength, 0, sendArray, 1,dataLength.length);
@@ -88,9 +90,33 @@ public class WebSocketRemote implements OnMessageObserver{
 				    sendArray[sendArray.length-1] = endByte;
 				    sendArray[dataLength.length+1] = separatorByte;
 					WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, sendArray,0,sendArray.length);
+*/
+					int sendSize = 4096;
+					int sendCount = base64.length / sendSize;
+					int remainder = base64.length % sendSize;
+					if(remainder!=0){
+						sendCount++;
+					}
+					byte[] imageId = Long.toString(new Date().getTime(),16).getBytes();
+					byte[] sequenceCount = Integer.toString(sendCount, 16).getBytes();
+					for(int i=0;i<sendCount;i++){
+						byte[] sequenceNumber = Integer.toString(i + 1, 16).getBytes();
+						int restLength = base64.length-i * sendSize;
+						int sendLength = sendSize<restLength?sendSize:restLength;
+						byte[] sendData = new byte[imageId.length + sequenceNumber.length + sequenceCount.length + sendLength + 3];
+						System.arraycopy(imageId, 0, sendData, 0, imageId.length);
+						System.arraycopy(sequenceNumber, 0, sendData, imageId.length + 1, sequenceNumber.length);
+						System.arraycopy(sequenceCount, 0, sendData, imageId.length + sequenceNumber.length + 2, sequenceCount.length);
+						System.arraycopy(base64, i * sendSize, sendData, imageId.length + sequenceNumber.length + sequenceCount.length + 3, sendLength);
+						sendData[imageId.length + 0] = separatorByte;
+						sendData[imageId.length + sequenceNumber.length + 1] = separatorByte;
+						sendData[imageId.length + sequenceNumber.length + sequenceCount.length + 2] =separatorByte;
+						WebSocketDesktop.sendMessageAll((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
+					}
+
 				}
 			}
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		}
 
 	}
