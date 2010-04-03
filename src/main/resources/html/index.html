@@ -12,12 +12,6 @@ var webSocket;
 //var receiveData;
 var receiveIndexes=[];
 var receiveData={};
-function scrollDisplay(eve){
-	var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
-	scrollTo(x,y);
-	sendMessage(["mousemove",eve.pageX,eve.pageY]);
-}
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -30,12 +24,18 @@ function setImageRequestTimer(milliseconds){
 	}
 	imageRequestTimer=setTimeout(requestImage,milliseconds);
 }
-function onOpen(){
+function onMouseMoveDisplay(eve){
+	var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
+	var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
+	scrollTo(x,y);
+	sendMessage(["mousemove",eve.pageX,eve.pageY]);
+}
+function onOpenWebSocket(){
 	requestImage();
 }
-function onClose(){
+function onCloseWebSocket(){
 }
-function onMessage(message){
+function onMessageWebSocket(message){
 	setImageRequestTimer(3000);
 	var data=message.data;
 	var splitData=data.split("_");
@@ -69,21 +69,21 @@ function onMessage(message){
 	remote.setAttribute("src","data:image/jpg;base64,"+base64);
 	setImageRequestTimer(100);
 }
-function onUnload(){
+function onUnloadWindow(){
 	webSocket.close();
 }
 function initial(eve){
 	browser=document.documentElement;
 	remote=document.getElementById("remote");
-	browser.addEventListener("mousemove",scrollDisplay,false);
+	browser.addEventListener("mousemove",onMouseMoveDisplay,false);
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
 	console.log(protocol+"://"+host+"/");
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
-	webSocket.addEventListener("open",onOpen,false);
-	webSocket.addEventListener("close",onClose,false);
-	webSocket.addEventListener("message",onMessage,false);
-	window.addEventListener("unload",onUnload,false);
+	webSocket.addEventListener("open",onOpenWebSocket,false);
+	webSocket.addEventListener("close",onCloseWebSocket,false);
+	webSocket.addEventListener("message",onMessageWebSocket,false);
+	window.addEventListener("unload",onUnloadWindow,false);
 }
 window.addEventListener("load",initial,false);
 </script>
