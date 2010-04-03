@@ -5,6 +5,7 @@
 body{overflow:hidden;margin:0px;}
 </style>
 <script>
+var imageRequestTimer=null;
 var browser;
 var remote;
 var webSocket;
@@ -19,42 +20,25 @@ var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
 console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve.y,browser.clientHeight,remote.offsetHeight);
 scrollTo(x,y);
 }
-function getMessage(message){
-//	console.log(message.data.length);
-//	remote.src="data:image/png;base64,"+message.data;
-/*
-	var data=message.data;
-	while(data.length!=0){
-		var startPosition=data.indexOf("^");
-		var endPosition=data.indexOf("$");
-		if(startPosition==-1){
-			startPosition=Number.POSITIVE_INFINITY;
-		}
-		if(endPosition==-1){
-			endPosition=Number.POSITIVE_INFINITY;
-		}
-		if(Math.min(startPosition,endPosition)==Number.POSITIVE_INFINITY){
-			receiveData+=data;
-			data="";
-		}else if(startPosition<endPosition){
-			receiveData="";
-			data=data.slice(startPosition+1);
-		}else if(startPosition>endPosition){
-			receiveData+=data.slice(0,endPosition);
-			data=data.slice(endPosition+1);
-			var separatorPosition=receiveData.indexOf("_");
-			if(separatorPosition!=-1){
-				var dataLength=parseInt(receiveData.slice(0,separatorPosition),16);
-				var base64=receiveData.slice(separatorPosition+1);
-				if(dataLength==base64.length){
-					remote.src="data:image/png;base64,"+base64;
-				}
-			}
-//			console.log("+++"+receiveData.length);
-			data="";
-		}
+function sendMessage(data){
+	webSocket.send(data.join(","));
+}
+function requestImage(){
+	sendMessage(["image"]);
+} 
+function setImageRequestTimer(milliseconds){
+	if(imageRequestTimer!=null){
+		clearTimeout(imageRequestTimer);
 	}
-*/
+	imageRequestTimer=setTimeout(requestImage,milliseconds);
+}
+function onOpen(){
+	requestImage();
+}
+function onClose(){
+}
+function onMessage(message){
+	setImageRequestTimer(3000);
 	var data=message.data;
 	var splitData=data.split("_");
 	if(splitData.length!=4){
@@ -85,6 +69,7 @@ function getMessage(message){
 		base64+=receive.data[i];
 	}
 	remote.setAttribute("src","data:image/jpg;base64,"+base64);
+	setImageRequestTimer(100);
 }
 function onUnload(){
 	webSocket.close();
@@ -97,7 +82,9 @@ function initial(eve){
 	var host=location.host;
 	console.log(protocol+"://"+host+"/");
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
-	webSocket.addEventListener("message",getMessage,false);
+	webSocket.addEventListener("open",onOpen,false);
+	webSocket.addEventListener("close",onClose,false);
+	webSocket.addEventListener("message",onMessage,false);
 	window.addEventListener("unload",onUnload,false);
 }
 window.addEventListener("load",initial,false);
