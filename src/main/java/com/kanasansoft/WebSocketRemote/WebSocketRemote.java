@@ -183,6 +183,29 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		}
 	}
 
+	void onMouseWheel(String data){
+		try {
+
+			if(data==null){return;}
+			if(data.equals("")){return;}
+			String[] messages = data.split(",");
+			if(messages.length!=1){return;}
+
+			int wheel = Integer.parseInt(messages[0]);
+			if(wheel>0){
+				wheel=-1;
+			}else if(wheel<0){
+				wheel=1;
+			}
+
+			Robot robot = new Robot();
+			robot.mouseWheel(wheel);
+
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	@Deprecated
 	synchronized public void onMessage(byte frame, String data) {
@@ -209,6 +232,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			onMouseDown(messageData);
 		}else if(messageType.equals("mouseup")){
 			onMouseUp(messageData);
+		}else if(messageType.equals("mousewheel")){
+			onMouseWheel(messageData);
 		}
 	}
 

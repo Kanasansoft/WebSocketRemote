@@ -52,6 +52,10 @@ function onMouseUpImage(eve){
 	}
 	sendMessage(["mouseup",button]);
 }
+function onMouseWheelImage(eve){
+	console.log(eve.wheelDelta);
+	sendMessage(["mousewheel",eve.wheelDelta]);
+}
 function onOpenWebSocket(){
 	requestImage();
 }
@@ -110,6 +114,7 @@ function initial(eve){
 	browser.addEventListener("contextmenu",onContextMenuBrowser,true);
 	remote.addEventListener("mousedown",onMouseDownImage,false);
 	remote.addEventListener("mouseup",onMouseUpImage,false);
+	remote.addEventListener("mousewheel",onMouseWheelImage,false);
 }
 window.addEventListener("load",initial,false);
 </script>
