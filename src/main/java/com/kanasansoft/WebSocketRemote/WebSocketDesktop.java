@@ -26,15 +26,15 @@ class WebSocketDesktop implements WebSocket {
 		clients.remove(this);
 	}
 	@Override
-	public void onMessage(byte frame, String data) {
+	synchronized public void onMessage(byte frame, String data) {
 		onMessageObserver.onMessage(this.outbound, frame, data);
 	}
 	@Override
-	public void onMessage(byte frame, byte[] data, int offset, int length) {
+	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
 		onMessageObserver.onMessage(this.outbound, frame, data, offset, length);
 	}
 	@Deprecated
-	static public void sendMessageAll(byte frame, String data) {
+	synchronized static public void sendMessageAll(byte frame, String data) {
 		for(WebSocketDesktop client : clients){
 			try {
 				client.outbound.sendMessage(frame, data);
@@ -44,7 +44,7 @@ class WebSocketDesktop implements WebSocket {
 		}
 	}
 	@Deprecated
-	static public void sendMessageAll(byte frame, byte[] data, int offset, int length) {
+	synchronized static public void sendMessageAll(byte frame, byte[] data, int offset, int length) {
 		for(WebSocketDesktop client : clients){
 			try {
 				client.outbound.sendMessage(frame, data, offset, length);
