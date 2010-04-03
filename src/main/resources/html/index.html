@@ -53,7 +53,6 @@ function onMouseUpImage(eve){
 	sendMessage(["mouseup",button]);
 }
 function onMouseWheelImage(eve){
-	console.log(eve.wheelDelta);
 	sendMessage(["mousewheel",eve.wheelDelta]);
 }
 function onOpenWebSocket(){
@@ -103,7 +102,6 @@ function initial(eve){
 	remote=document.getElementById("remote");
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
-	console.log(protocol+"://"+host+"/");
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("open",onOpenWebSocket,false);
 	webSocket.addEventListener("close",onCloseWebSocket,false);
