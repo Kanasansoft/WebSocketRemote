@@ -25,8 +25,8 @@ function setImageRequestTimer(milliseconds){
 	imageRequestTimer=setTimeout(requestImage,milliseconds);
 }
 function onMouseMoveBrowser(eve){
-	var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
+	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
+	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
 	scrollTo(x,y);
 	sendMessage(["mousemove",eve.pageX,eve.pageY]);
 }
