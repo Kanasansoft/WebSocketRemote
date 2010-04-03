@@ -86,7 +86,7 @@ function getMessage(message){
 	}
 	remote.setAttribute("src","data:image/jpg;base64,"+base64);
 }
-function closeWebSocket(){
+function onUnload(){
 	webSocket.close();
 }
 function initial(eve){
@@ -98,7 +98,7 @@ function initial(eve){
 	console.log(protocol+"://"+host+"/");
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("message",getMessage,false);
-	window.addEventListener("unload",closeWebSocket,false);
+	window.addEventListener("unload",onUnload,false);
 }
 window.addEventListener("load",initial,false);
 </script>
