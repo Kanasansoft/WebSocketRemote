@@ -84,7 +84,7 @@ function getMessage(message){
 	for(var i=1;i<receive.data.length;i++){
 		base64+=receive.data[i];
 	}
-	remote.src="data:image/png;base64,"+base64;
+	remote.setAttribute("src","data:image/jpg;base64,"+base64);
 }
 function closeWebSocket(){
 	webSocket.close();
