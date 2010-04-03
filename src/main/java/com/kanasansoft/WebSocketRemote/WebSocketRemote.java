@@ -30,7 +30,6 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	}
 
 	public WebSocketRemote() throws Exception {
-
 		MenuItem quitMenuItem = new MenuItem("Quit");
 		quitMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -75,18 +74,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	}
 
-	@Override
-	@Deprecated
-	synchronized public void onMessage(byte frame, String data) {
-	}
-
-	@Override
-	@Deprecated
-	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
-	}
-
-	@Override
-	synchronized public void onMessage(Outbound outbound, byte frame, String data) {
+	void sendCaptureImage(Outbound outbound){
 		byte separatorByte = "_".getBytes()[0];
 		if(screenData==null){return;}
 		byte[] base64 = screenData.base64;
@@ -116,6 +104,29 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	synchronized public void onMessage(byte frame, String data) {
+	}
+
+	@Override
+	@Deprecated
+	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
+	}
+
+	@Override
+	synchronized public void onMessage(Outbound outbound, byte frame, String data) {
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",",2);
+		if(messages.length==0){return;}
+		String messageType = messages[0];
+		String messageData = messages.length==1?"":messages[1];
+		if(messageType.equals("image")){
+			sendCaptureImage(outbound);
 		}
 	}
 
