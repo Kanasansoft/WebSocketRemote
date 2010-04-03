@@ -18,8 +18,9 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.eclipse.jetty.websocket.WebSocket.Outbound;
 
-public class WebSocketRemote implements OnMessageObserver{
+public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	ScreenData screenData = null;
 
@@ -68,14 +69,15 @@ public class WebSocketRemote implements OnMessageObserver{
 		server.start();
 
 		Capture capture = new Capture();
+		capture.setOnCaptureObserver(this);
 		capture.start();
 
-		byte startByte = "^".getBytes()[0];
-		byte endByte = "$".getBytes()[0];
+//		byte startByte = "^".getBytes()[0];
+//		byte endByte = "$".getBytes()[0];
 		byte separatorByte = "_".getBytes()[0];
 
 		while(true){
-			screenData = capture.getScreenData();
+//			screenData = capture.getScreenData();
 			if(screenData!=null){
 				byte[] base64 = screenData.base64;
 				if(base64!=null){
@@ -122,11 +124,26 @@ public class WebSocketRemote implements OnMessageObserver{
 	}
 
 	@Override
-	public void onMessage(byte frame, String data) {
+	@Deprecated
+	synchronized public void onMessage(byte frame, String data) {
 	}
 
 	@Override
-	public void onMessage(byte frame, byte[] data, int offset, int length) {
+	@Deprecated
+	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
+	}
+
+	@Override
+	synchronized public void onMessage(Outbound outbound, byte frame, String data) {
+	}
+
+	@Override
+	synchronized public void onMessage(Outbound outbound, byte frame, byte[] data, int offset, int length) {
+	}
+
+	@Override
+	synchronized public void onCapture(ScreenData screenData) {
+		this.screenData=screenData;
 	}
 
 }

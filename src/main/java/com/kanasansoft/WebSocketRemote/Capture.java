@@ -15,6 +15,7 @@ import org.apache.commons.codec.binary.Base64;
 
 class Capture extends Thread {
 	private ScreenData screenData = new ScreenData();
+	private OnCaptureObserver onCaptureObserver = null;
 	@Override
 	public void run() {
 		try{
@@ -31,7 +32,10 @@ class Capture extends Thread {
 				ImageIO.write(bf,"png",baos);
 				byte[] bytes = baos.toByteArray();
 				byte[] base64 = Base64.encodeBase64(bytes);
-				screenData.set(base64, rect);
+				setScreenData(base64, rect);
+				if(onCaptureObserver!=null){
+					onCaptureObserver.onCapture(screenData);
+				}
 				sleep(0);
 			}
 		} catch (AWTException e) {
@@ -43,7 +47,13 @@ class Capture extends Thread {
 		}
 		System.exit(1);
 	}
-	ScreenData getScreenData(){
+	synchronized private void setScreenData(byte[] base64, Rectangle rect){
+		screenData.set(base64, rect);
+	}
+	synchronized ScreenData getScreenData(){
 		return screenData.get();
+	}
+	void setOnCaptureObserver(OnCaptureObserver onCaptureObserver){
+		this.onCaptureObserver = onCaptureObserver;
 	}
 }
