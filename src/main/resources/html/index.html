@@ -30,6 +30,10 @@ function onMouseMoveBrowser(eve){
 	scrollTo(x,y);
 	sendMessage(["mousemove",eve.pageX,eve.pageY]);
 }
+function onContextMenuBrowser(eve){
+	eve.stopPropagation();
+	eve.preventDefault();
+}
 function onMouseDownImage(eve){
 	var button="";
 	switch(eve.button){
@@ -102,6 +106,8 @@ function initial(eve){
 	webSocket.addEventListener("message",onMessageWebSocket,false);
 	window.addEventListener("unload",onUnloadWindow,false);
 	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
+	browser.addEventListener("contextmenu",onContextMenuBrowser,false);
+	browser.addEventListener("contextmenu",onContextMenuBrowser,true);
 	remote.addEventListener("mousedown",onMouseDownImage,false);
 	remote.addEventListener("mouseup",onMouseUpImage,false);
 }
