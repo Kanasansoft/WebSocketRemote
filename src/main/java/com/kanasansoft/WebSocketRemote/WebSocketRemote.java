@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -111,14 +112,72 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	void onMouseMove(String data){
 		try {
+
 			if(data==null){return;}
 			if(data.equals("")){return;}
 			String[] messages = data.split(",");
 			if(messages.length!=2){return;}
+
 			int x = Integer.parseInt(messages[0]);
 			int y = Integer.parseInt(messages[1]);
+
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
+
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void onMouseDown(String data){
+		try {
+
+			if(data==null){return;}
+			if(data.equals("")){return;}
+			String[] messages = data.split(",");
+			if(messages.length!=1){return;}
+
+			String buttonString = messages[0];
+			int button = 0;
+			if(buttonString.equals("main")){
+				button = InputEvent.BUTTON1_MASK;
+			}else if(buttonString.equals("wheel")){
+				button = InputEvent.BUTTON2_MASK;
+			}else if(buttonString.equals("contextmenu")){
+				button = InputEvent.BUTTON3_MASK;
+			}
+			if(button==0){return;}
+
+			Robot robot = new Robot();
+			robot.mousePress(button);
+
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void onMouseUp(String data){
+		try {
+
+			if(data==null){return;}
+			if(data.equals("")){return;}
+			String[] messages = data.split(",");
+			if(messages.length!=1){return;}
+
+			String buttonString = messages[0];
+			int button = 0;
+			if(buttonString.equals("main")){
+				button = InputEvent.BUTTON1_MASK;
+			}else if(buttonString.equals("wheel")){
+				button = InputEvent.BUTTON2_MASK;
+			}else if(buttonString.equals("contextmenu")){
+				button = InputEvent.BUTTON3_MASK;
+			}
+			if(button==0){return;}
+
+			Robot robot = new Robot();
+			robot.mouseRelease(button);
+
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
@@ -146,6 +205,10 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			sendCaptureImage(outbound);
 		}else if(messageType.equals("mousemove")){
 			onMouseMove(messageData);
+		}else if(messageType.equals("mousedown")){
+			onMouseDown(messageData);
+		}else if(messageType.equals("mouseup")){
+			onMouseUp(messageData);
 		}
 	}
 

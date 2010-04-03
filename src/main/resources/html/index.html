@@ -24,11 +24,29 @@ function setImageRequestTimer(milliseconds){
 	}
 	imageRequestTimer=setTimeout(requestImage,milliseconds);
 }
-function onMouseMoveDisplay(eve){
+function onMouseMoveBrowser(eve){
 	var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
 	var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
 	scrollTo(x,y);
 	sendMessage(["mousemove",eve.pageX,eve.pageY]);
+}
+function onMouseDownImage(eve){
+	var button="";
+	switch(eve.button){
+	case 0:button="main";break;
+	case 1:button="wheel";break;
+	case 2:button="contextmenu";break;
+	}
+	sendMessage(["mousedown",button]);
+}
+function onMouseUpImage(eve){
+	var button="";
+	switch(eve.button){
+	case 0:button="main";break;
+	case 1:button="wheel";break;
+	case 2:button="contextmenu";break;
+	}
+	sendMessage(["mouseup",button]);
 }
 function onOpenWebSocket(){
 	requestImage();
@@ -75,7 +93,6 @@ function onUnloadWindow(){
 function initial(eve){
 	browser=document.documentElement;
 	remote=document.getElementById("remote");
-	browser.addEventListener("mousemove",onMouseMoveDisplay,false);
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
 	console.log(protocol+"://"+host+"/");
@@ -84,6 +101,9 @@ function initial(eve){
 	webSocket.addEventListener("close",onCloseWebSocket,false);
 	webSocket.addEventListener("message",onMessageWebSocket,false);
 	window.addEventListener("unload",onUnloadWindow,false);
+	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
+	remote.addEventListener("mousedown",onMouseDownImage,false);
+	remote.addEventListener("mouseup",onMouseUpImage,false);
 }
 window.addEventListener("load",initial,false);
 </script>
