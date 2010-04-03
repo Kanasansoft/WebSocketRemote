@@ -13,12 +13,10 @@ var webSocket;
 var receiveIndexes=[];
 var receiveData={};
 function scrollDisplay(eve){
-//var x=eve.x/remote.offsetWidth*(remote.offsetWidth-browser.clientWidth);
-//var y=eve.y/remote.offsetHeight*browser.clientHeight;
-var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
-console.log(document.compatMode,eve.x,browser.clientWidth,remote.offsetWidth,eve.y,browser.clientHeight,remote.offsetHeight);
-scrollTo(x,y);
+	var x=eve.x/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
+	var y=eve.y/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
+	scrollTo(x,y);
+	sendMessage(["mousemove",eve.pageX,eve.pageY]);
 }
 function sendMessage(data){
 	webSocket.send(data.join(","));

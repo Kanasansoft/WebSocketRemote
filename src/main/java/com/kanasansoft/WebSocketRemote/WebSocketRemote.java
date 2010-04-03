@@ -1,7 +1,9 @@
 package com.kanasansoft.WebSocketRemote;
 
+import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
@@ -107,6 +109,21 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		}
 	}
 
+	void onMouseMove(String data){
+		try {
+			if(data==null){return;}
+			if(data.equals("")){return;}
+			String[] messages = data.split(",");
+			if(messages.length!=2){return;}
+			int x = Integer.parseInt(messages[0]);
+			int y = Integer.parseInt(messages[1]);
+			Robot robot = new Robot();
+			robot.mouseMove(x, y);
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	@Deprecated
 	synchronized public void onMessage(byte frame, String data) {
@@ -127,6 +144,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		String messageData = messages.length==1?"":messages[1];
 		if(messageType.equals("image")){
 			sendCaptureImage(outbound);
+		}else if(messageType.equals("mousemove")){
+			onMouseMove(messageData);
 		}
 	}
 
