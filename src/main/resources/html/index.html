@@ -55,6 +55,20 @@ function onMouseUpImage(eve){
 function onMouseWheelImage(eve){
 	sendMessage(["mousewheel",eve.wheelDelta]);
 }
+/*
+function onKeyDownImage(eve){
+	console.log(eve.keyCode);
+//	sendMessage(["keydown"]);
+}
+function onKeyUpImage(eve){
+	console.log(eve.keyCode);
+//	sendMessage(["keyup"]);
+}
+function onKeyPressImage(eve){
+	console.log(eve.charCode);
+//	sendMessage(["keypress"]);
+}
+*/
 function onOpenWebSocket(){
 	requestImage();
 }
@@ -113,6 +127,9 @@ function initial(eve){
 	remote.addEventListener("mousedown",onMouseDownImage,false);
 	remote.addEventListener("mouseup",onMouseUpImage,false);
 	remote.addEventListener("mousewheel",onMouseWheelImage,false);
+//	window.addEventListener("keydown",onKeyDownImage,false);
+//	window.addEventListener("keyup",onKeyUpImage,false);
+//	window.addEventListener("keypress",onKeyPressImage,false);
 }
 window.addEventListener("load",initial,false);
 </script>
