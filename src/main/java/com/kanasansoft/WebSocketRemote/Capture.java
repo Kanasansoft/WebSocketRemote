@@ -61,7 +61,7 @@ class Capture extends Thread {
 					count=size.length-1;
 				}
 
-				sleep(0);
+				sleep(100);
 
 			}
 		} catch (AWTException e) {
