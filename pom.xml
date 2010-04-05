@@ -51,6 +51,12 @@
           <archive>
             <manifest>
               <mainClass>${package.main-class}</mainClass>
+              <packageName>${package.package-name}</packageName>
+              <addClasspath>true</addClasspath>
+<!--
+              <addExtensions>true</addExtensions>
+-->
+              <classpathPrefix>lib</classpathPrefix>
             </manifest>
             <manifestEntries>
               <Built-By>Kanasansoft</Built-By>
@@ -91,6 +97,7 @@
               <icon>target${file.separator}classes${file.separator}images${file.separator}windows.ico</icon>
               <jre>
                 <minVersion>1.6.0</minVersion>
+                <maxHeapSize>1024</maxHeapSize>
               </jre>
             </configuration>
           </execution>
