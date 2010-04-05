@@ -52,7 +52,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		SystemTray systemTray = java.awt.SystemTray.getSystemTray();
 		systemTray.add(trayIcon);
 
-		Server server = new Server(8088);
+		Server server = new Server(40320);
 
 		ResourceHandler resourceHandler = new ResourceHandler();
 		String htmlPath = this.getClass().getClassLoader().getResource("html").toExternalForm();
