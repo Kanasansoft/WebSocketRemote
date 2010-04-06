@@ -69,6 +69,13 @@ function onKeyPressImage(eve){
 }
 */
 function onOpenWebSocket(){
+	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
+	remote.addEventListener("mousedown",onMouseDownImage,false);
+	remote.addEventListener("mouseup",onMouseUpImage,false);
+	remote.addEventListener("mousewheel",onMouseWheelImage,false);
+//	window.addEventListener("keydown",onKeyDownImage,false);
+//	window.addEventListener("keyup",onKeyUpImage,false);
+//	window.addEventListener("keypress",onKeyPressImage,false);
 	requestImage();
 }
 function onCloseWebSocket(){
@@ -120,15 +127,8 @@ function initial(eve){
 	webSocket.addEventListener("close",onCloseWebSocket,false);
 	webSocket.addEventListener("message",onMessageWebSocket,false);
 	window.addEventListener("unload",onUnloadWindow,false);
-	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
 	browser.addEventListener("contextmenu",onContextMenuBrowser,false);
 	browser.addEventListener("contextmenu",onContextMenuBrowser,true);
-	remote.addEventListener("mousedown",onMouseDownImage,false);
-	remote.addEventListener("mouseup",onMouseUpImage,false);
-	remote.addEventListener("mousewheel",onMouseWheelImage,false);
-//	window.addEventListener("keydown",onKeyDownImage,false);
-//	window.addEventListener("keyup",onKeyUpImage,false);
-//	window.addEventListener("keypress",onKeyPressImage,false);
 }
 window.addEventListener("load",initial,false);
 </script>
