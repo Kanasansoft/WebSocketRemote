@@ -120,6 +120,10 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			int x = Integer.parseInt(messages[0]);
 			int y = Integer.parseInt(messages[1]);
 
+			if(screenData==null){return;}
+			x += screenData.rect.x;
+			y += screenData.rect.y;
+
 			Robot robot = new Robot();
 			robot.mouseMove(x, y);
 
