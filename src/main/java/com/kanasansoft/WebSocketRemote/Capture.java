@@ -31,14 +31,20 @@ class Capture extends Thread {
 				GraphicsDevice[] gds = ge.getScreenDevices();
 				Rectangle rect=new Rectangle(0,0,-1,-1);
 				for(int i=0;i<gds.length;i++){
-					rect.add(gds[i].getDefaultConfiguration().getBounds());
+					Rectangle bounds = gds[i].getDefaultConfiguration().getBounds();
+					rect.add(bounds);
 				}
-				Robot robot = new Robot();
-				BufferedImage bf = robot.createScreenCapture(rect);
 
-				Graphics graphics = bf.getGraphics();
+				BufferedImage bf = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_3BYTE_BGR);
+				for(int i=0;i<gds.length;i++){
+					Rectangle rectMonitor = gds[i].getDefaultConfiguration().getBounds();
+					Rectangle captureArea = new Rectangle(rectMonitor.width, rectMonitor.height);
+					BufferedImage bfMonitor = new Robot(gds[i]).createScreenCapture(captureArea);
+					bf.getSubimage(rectMonitor.x-rect.x, rectMonitor.y-rect.y, rectMonitor.width, rectMonitor.height).setData(bfMonitor.getData());
+				}
+
+				Graphics graphics = bf.createGraphics();
 				Point mousePoint = MouseInfo.getPointerInfo().getLocation();
-
 				graphics.setColor(new Color(0,0,0));
 				graphics.drawOval(mousePoint.x-rect.x-size[count]+0, mousePoint.y-rect.y-size[count]+0, size[count]*2+0, size[count]*2+0);
 				graphics.setColor(new Color(255,255,255));
