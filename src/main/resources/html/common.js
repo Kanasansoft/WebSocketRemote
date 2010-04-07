@@ -20,6 +20,8 @@ function onMouseMoveBrowser(eve){
 	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
 	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
 	scrollTo(x,y);
+	eve.stopPropagation();
+	eve.preventDefault();
 	sendMessage(["mousemove",eve.pageX,eve.pageY]);
 }
 function onContextMenuBrowser(eve){
@@ -33,6 +35,8 @@ function onMouseDownImage(eve){
 	case 1:button="wheel";break;
 	case 2:button="contextmenu";break;
 	}
+	eve.stopPropagation();
+	eve.preventDefault();
 	sendMessage(["mousedown",button]);
 }
 function onMouseUpImage(eve){
@@ -42,9 +46,13 @@ function onMouseUpImage(eve){
 	case 1:button="wheel";break;
 	case 2:button="contextmenu";break;
 	}
+	eve.stopPropagation();
+	eve.preventDefault();
 	sendMessage(["mouseup",button]);
 }
 function onMouseWheelImage(eve){
+	eve.stopPropagation();
+	eve.preventDefault();
 	sendMessage(["mousewheel",eve.wheelDelta]);
 }
 /*
