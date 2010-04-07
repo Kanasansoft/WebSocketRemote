@@ -3,7 +3,10 @@ package com.kanasansoft.WebSocketRemote;
 import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.PopupMenu;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -26,6 +29,7 @@ import org.eclipse.jetty.websocket.WebSocket.Outbound;
 
 public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
+	Robot robot = new Robot();
 	ScreenData screenData = null;
 
 	public static void main(String[] args) throws Exception {
@@ -111,109 +115,97 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	}
 
 	void onMouseMove(String data){
-		try {
 
-			if(data==null){return;}
-			if(data.equals("")){return;}
-			String[] messages = data.split(",");
-			if(messages.length!=2){return;}
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",");
+		if(messages.length!=2){return;}
 
-			int x = Integer.parseInt(messages[0]);
-			int y = Integer.parseInt(messages[1]);
+		int x = Integer.parseInt(messages[0]);
+		int y = Integer.parseInt(messages[1]);
 
-			if(screenData==null){return;}
-			x += screenData.rect.x;
-			y += screenData.rect.y;
+		if(screenData==null){return;}
+		x += screenData.rect.x;
+		y += screenData.rect.y;
 
-			Robot robot = new Robot();
-			robot.mouseMove(x, y);
+		robot.waitForIdle();
+		robot.mouseMove(x, y);
+		robot.waitForIdle();
 
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
 	}
 
 	void onMouseDown(String data){
-		try {
 
-			if(MouseInfo.getPointerInfo()==null){return;}
+		if(MouseInfo.getPointerInfo()==null){return;}
 
-			if(data==null){return;}
-			if(data.equals("")){return;}
-			String[] messages = data.split(",");
-			if(messages.length!=1){return;}
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",");
+		if(messages.length!=1){return;}
 
-			String buttonString = messages[0];
-			int button = 0;
-			if(buttonString.equals("main")){
-				button = InputEvent.BUTTON1_MASK;
-			}else if(buttonString.equals("wheel")){
-				button = InputEvent.BUTTON2_MASK;
-			}else if(buttonString.equals("contextmenu")){
-				button = InputEvent.BUTTON3_MASK;
-			}
-			if(button==0){return;}
-
-			Robot robot = new Robot();
-			robot.mousePress(button);
-
-		} catch (AWTException e) {
-			e.printStackTrace();
+		String buttonString = messages[0];
+		int button = 0;
+		if(buttonString.equals("main")){
+			button = InputEvent.BUTTON1_MASK;
+		}else if(buttonString.equals("wheel")){
+			button = InputEvent.BUTTON2_MASK;
+		}else if(buttonString.equals("contextmenu")){
+			button = InputEvent.BUTTON3_MASK;
 		}
+		if(button==0){return;}
+
+		robot.waitForIdle();
+		robot.mousePress(button);
+		robot.waitForIdle();
+
 	}
 
 	void onMouseUp(String data){
-		try {
 
-			if(MouseInfo.getPointerInfo()==null){return;}
+		if(MouseInfo.getPointerInfo()==null){return;}
 
-			if(data==null){return;}
-			if(data.equals("")){return;}
-			String[] messages = data.split(",");
-			if(messages.length!=1){return;}
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",");
+		if(messages.length!=1){return;}
 
-			String buttonString = messages[0];
-			int button = 0;
-			if(buttonString.equals("main")){
-				button = InputEvent.BUTTON1_MASK;
-			}else if(buttonString.equals("wheel")){
-				button = InputEvent.BUTTON2_MASK;
-			}else if(buttonString.equals("contextmenu")){
-				button = InputEvent.BUTTON3_MASK;
-			}
-			if(button==0){return;}
-
-			Robot robot = new Robot();
-			robot.mouseRelease(button);
-
-		} catch (AWTException e) {
-			e.printStackTrace();
+		String buttonString = messages[0];
+		int button = 0;
+		if(buttonString.equals("main")){
+			button = InputEvent.BUTTON1_MASK;
+		}else if(buttonString.equals("wheel")){
+			button = InputEvent.BUTTON2_MASK;
+		}else if(buttonString.equals("contextmenu")){
+			button = InputEvent.BUTTON3_MASK;
 		}
+		if(button==0){return;}
+
+		robot.waitForIdle();
+		robot.mouseRelease(button);
+		robot.waitForIdle();
+
 	}
 
 	void onMouseWheel(String data){
-		try {
 
-			if(MouseInfo.getPointerInfo()==null){return;}
+		if(MouseInfo.getPointerInfo()==null){return;}
 
-			if(data==null){return;}
-			if(data.equals("")){return;}
-			String[] messages = data.split(",");
-			if(messages.length!=1){return;}
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",");
+		if(messages.length!=1){return;}
 
-			int wheel = Integer.parseInt(messages[0]);
-			if(wheel>0){
-				wheel=-1;
-			}else if(wheel<0){
-				wheel=1;
-			}
-
-			Robot robot = new Robot();
-			robot.mouseWheel(wheel);
-
-		} catch (AWTException e) {
-			e.printStackTrace();
+		int wheel = Integer.parseInt(messages[0]);
+		if(wheel>0){
+			wheel=-1;
+		}else if(wheel<0){
+			wheel=1;
 		}
+
+		robot.waitForIdle();
+		robot.mouseWheel(wheel);
+		robot.waitForIdle();
+
 	}
 
 	@Override
