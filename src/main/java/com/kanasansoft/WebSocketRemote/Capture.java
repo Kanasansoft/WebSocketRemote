@@ -7,6 +7,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
@@ -44,12 +45,15 @@ class Capture extends Thread {
 				}
 
 				Graphics graphics = bf.createGraphics();
-				Point mousePoint = MouseInfo.getPointerInfo().getLocation();
-				graphics.setColor(new Color(0,0,0));
-				graphics.drawOval(mousePoint.x-rect.x-size[count]+0, mousePoint.y-rect.y-size[count]+0, size[count]*2+0, size[count]*2+0);
-				graphics.setColor(new Color(255,255,255));
-				graphics.drawOval(mousePoint.x-rect.x-size[count]+1, mousePoint.y-rect.y-size[count]+1, size[count]*2-2, size[count]*2-2);
-				graphics.drawOval(mousePoint.x-rect.x-size[count]-1, mousePoint.y-rect.y-size[count]-1, size[count]*2+2, size[count]*2+2);
+				PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+				if(pointerInfo!=null){
+					Point mousePoint = pointerInfo.getLocation();
+					graphics.setColor(new Color(0,0,0));
+					graphics.drawOval(mousePoint.x-rect.x-size[count]+0, mousePoint.y-rect.y-size[count]+0, size[count]*2+0, size[count]*2+0);
+					graphics.setColor(new Color(255,255,255));
+					graphics.drawOval(mousePoint.x-rect.x-size[count]+1, mousePoint.y-rect.y-size[count]+1, size[count]*2-2, size[count]*2-2);
+					graphics.drawOval(mousePoint.x-rect.x-size[count]-1, mousePoint.y-rect.y-size[count]-1, size[count]*2+2, size[count]*2+2);
+				}
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(bf,"png",baos);
