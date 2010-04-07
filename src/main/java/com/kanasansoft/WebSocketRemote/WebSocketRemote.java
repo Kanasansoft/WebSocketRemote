@@ -2,6 +2,7 @@ package com.kanasansoft.WebSocketRemote;
 
 import java.awt.AWTException;
 import java.awt.MenuItem;
+import java.awt.MouseInfo;
 import java.awt.PopupMenu;
 import java.awt.Robot;
 import java.awt.SystemTray;
@@ -135,6 +136,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	void onMouseDown(String data){
 		try {
 
+			if(MouseInfo.getPointerInfo()==null){return;}
+
 			if(data==null){return;}
 			if(data.equals("")){return;}
 			String[] messages = data.split(",");
@@ -162,6 +165,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	void onMouseUp(String data){
 		try {
 
+			if(MouseInfo.getPointerInfo()==null){return;}
+
 			if(data==null){return;}
 			if(data.equals("")){return;}
 			String[] messages = data.split(",");
@@ -188,6 +193,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	void onMouseWheel(String data){
 		try {
+
+			if(MouseInfo.getPointerInfo()==null){return;}
 
 			if(data==null){return;}
 			if(data.equals("")){return;}
