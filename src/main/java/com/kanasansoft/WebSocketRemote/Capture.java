@@ -56,7 +56,7 @@ class Capture extends Thread {
 				}
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ImageIO.write(bf,"png",baos);
+				ImageIO.write(bf,"jpeg",baos);
 				byte[] bytes = baos.toByteArray();
 				byte[] base64 = Base64.encodeBase64(bytes);
 
