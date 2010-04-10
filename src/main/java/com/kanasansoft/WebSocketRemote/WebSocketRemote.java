@@ -1,12 +1,8 @@
 package com.kanasansoft.WebSocketRemote;
 
-import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.PointerInfo;
 import java.awt.PopupMenu;
-import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -64,10 +60,11 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		resourceHandler.setResourceBase(htmlPath);
 
 		WSServlet wsServlet = new WSServlet(this);
-		ServletContextHandler wsServletContextHandler = new ServletContextHandler();
 		ServletHolder wsServletHolder = new ServletHolder(wsServlet);
 		wsServletHolder.setInitParameter("bufferSize", Integer.toString(8192*256,10));
+		ServletContextHandler wsServletContextHandler = new ServletContextHandler();
 		wsServletContextHandler.addServlet(wsServletHolder, "/ws/*");
+
 		HandlerList handlerList = new HandlerList();
 		handlerList.setHandlers(new Handler[] {resourceHandler, wsServletContextHandler});
 		server.setHandler(handlerList);
