@@ -4,11 +4,11 @@ import java.awt.Rectangle;
 import java.util.Date;
 
 class ScreenData {
-	static long imageIdSequence=0;
-	long imageId;
-	Date date;
-	byte[] base64 = null;
-	Rectangle rect = null;
+	private static long imageIdSequence=0;
+	private long imageId;
+	private Date date;
+	private byte[] base64 = null;
+	private Rectangle rect = null;
 	public ScreenData() {
 		this.imageId = ++imageIdSequence;
 		this.date = new Date();
@@ -20,6 +20,18 @@ class ScreenData {
 		this.date = new Date(date.getTime());
 		this.base64 = base64.clone();
 		this.rect = new Rectangle(rect.x, rect.y, rect.width, rect.height);
+	}
+	public long getImageId() {
+		return imageId;
+	}
+	public Date getTime() {
+		return date;
+	}
+	public byte[] getBase64() {
+		return base64;
+	}
+	public Rectangle getRect() {
+		return rect;
 	}
 	synchronized void set(byte[] base64, Rectangle rect) {
 		this.imageId = ++imageIdSequence;

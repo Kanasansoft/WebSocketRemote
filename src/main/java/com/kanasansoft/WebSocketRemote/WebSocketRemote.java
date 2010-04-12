@@ -3,6 +3,7 @@ package com.kanasansoft.WebSocketRemote;
 import java.awt.MenuItem;
 import java.awt.MouseInfo;
 import java.awt.PopupMenu;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
@@ -79,7 +80,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	void sendCaptureImage(Outbound outbound){
 		byte separatorByte = "_".getBytes()[0];
 		if(screenData==null){return;}
-		byte[] base64 = screenData.base64;
+		byte[] base64 = screenData.getBase64();
 		if(base64==null){return;}
 		int sendSize = 8192;
 		int sendCount = base64.length / sendSize;
@@ -120,8 +121,9 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		int y = Integer.parseInt(messages[1]);
 
 		if(screenData==null){return;}
-		x += screenData.rect.x;
-		y += screenData.rect.y;
+		Rectangle rect = screenData.getRect();
+		x += rect.x;
+		y += rect.y;
 
 		robot.waitForIdle();
 		robot.mouseMove(x, y);
