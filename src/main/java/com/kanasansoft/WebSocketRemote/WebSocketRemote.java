@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
