@@ -3,7 +3,7 @@
   <groupId>com.kanasansoft.WebSocketRemote</groupId>
   <artifactId>WebSocketRemote</artifactId>
   <name>WebSocketRemote</name>
-  <version>0.0.7</version>
+  <version>0.0.8-SNAPSHOT</version>
   <properties>
     <package.package-name>com.kanasansoft.WebSocketRemote</package.package-name>
     <package.main-class>${package.package-name}.${name}</package.main-class>
