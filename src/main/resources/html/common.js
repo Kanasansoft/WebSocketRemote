@@ -88,21 +88,21 @@ function onMessageWebSocket(message){
 	if(splitData.length!=4){
 		return;
 	}
-	var imageId=splitData[0];
+	var capturedDate=splitData[0];
 	var sequenceNumber=parseInt(splitData[1],16);
 	var sequenceCount=parseInt(splitData[2],16);
-	if(receiveIndexes.indexOf(imageId)==-1){
-		receiveIndexes.push(imageId);
+	if(receiveIndexes.indexOf(capturedDate)==-1){
+		receiveIndexes.push(capturedDate);
 		receiveIndexes.sort(function(a,b){return parseInt(a,16)-parseInt(b,16);});
-		receiveData[imageId]={"data":[],"receiveCount":0,"sequenceCount":sequenceCount};
+		receiveData[capturedDate]={"data":[],"receiveCount":0,"sequenceCount":sequenceCount};
 	}
-	var receive=receiveData[imageId];
+	var receive=receiveData[capturedDate];
 	receive.receiveCount++;
 	receive.data[sequenceNumber]=splitData[3];
 	if(receive.receiveCount!=receive.sequenceCount){
 		return;
 	}
-	var currentPosition=receiveIndexes.indexOf(imageId);
+	var currentPosition=receiveIndexes.indexOf(capturedDate);
 	deleteIndexes=receiveIndexes.slice(0,currentPosition+1);
 	receiveIndexes=receiveIndexes.slice(currentPosition+2);
 	for(var i=0;i<deleteIndexes.length;i++){
