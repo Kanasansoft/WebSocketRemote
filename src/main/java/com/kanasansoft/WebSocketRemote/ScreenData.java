@@ -24,7 +24,7 @@ class ScreenData {
 	public long getImageId() {
 		return imageId;
 	}
-	public Date getTime() {
+	public Date getDate() {
 		return date;
 	}
 	public byte[] getBase64() {

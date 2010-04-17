@@ -88,7 +88,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		if(remainder!=0){
 			sendCount++;
 		}
-		byte[] imageId = Long.toString(new Date().getTime(),16).getBytes();
+		byte[] imageId = Long.toString(screenData.getDate().getTime(),16).getBytes();
 		byte[] sequenceCount = Integer.toString(sendCount, 16).getBytes();
 		for(int i=0;i<sendCount;i++){
 			byte[] sequenceNumber = Integer.toString(i + 1, 16).getBytes();
