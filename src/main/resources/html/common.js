@@ -82,8 +82,25 @@ function onOpenWebSocket(){
 function onCloseWebSocket(){
 }
 function onMessageWebSocket(message){
-	setImageRequestTimer(3000);
 	var data=message.data;
+	var position=data.indexOf("_");
+	var messageType;
+	var messageData;
+	if(position==-1){
+		messageType=data;
+		messageData="";
+	}else{
+		messageType=data.slice(0,position);
+		messageData=data.slice(position+1);
+	}
+	switch(messageType){
+	case "image":
+		onMessageWebSocketImage(messageData);
+		break;
+	}
+}
+function onMessageWebSocketImage(data){
+	setImageRequestTimer(3000);
 	var splitData=data.split("_");
 	if(splitData.length!=4){
 		return;

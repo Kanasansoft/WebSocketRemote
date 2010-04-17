@@ -106,6 +106,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		if(remainder!=0){
 			sendCount++;
 		}
+		byte[] messageType = "image".getBytes();
 		byte[] capturedDate = Long.toString(screenData.getDate().getTime(),16).getBytes();
 		byte[] sequenceCount = Integer.toString(sendCount, 16).getBytes();
 		for(int i=0;i<sendCount;i++){
@@ -114,7 +115,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			int sendLength = sendSize<restLength?sendSize:restLength;
 			byte[] imageData = new byte[sendLength];
 			System.arraycopy(base64, i * sendSize, imageData, 0, sendLength);
-			byte[] sendData = makeSendData(capturedDate, sequenceNumber, sequenceCount, imageData);
+			byte[] sendData = makeSendData(messageType, capturedDate, sequenceNumber, sequenceCount, imageData);
 			try {
 				outbound.sendMessage((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
 			} catch (IOException e) {
