@@ -77,8 +77,27 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	}
 
+	byte[] makeSendData(byte[]... data){
+		int arrayLength = data.length-1;
+		for(int i=0;i<data.length;i++){
+			byte[] bytes = data[i];
+			arrayLength+=bytes.length;
+		}
+		byte[] sendData = new byte[arrayLength];
+		for(int i=0,position=0;i<data.length;i++){
+			byte[] bytes = data[i];
+			System.arraycopy(bytes, 0, sendData, position, bytes.length);
+			position += bytes.length + 1;
+		}
+		for(int i=0,position=-1;i<data.length-1;i++){
+			byte[] bytes = data[i];
+			position += bytes.length + 1;
+			sendData[position] = "_".getBytes()[0];
+		}
+		return sendData;
+	}
+
 	void sendCaptureImage(Outbound outbound){
-		byte separatorByte = "_".getBytes()[0];
 		if(screenData==null){return;}
 		byte[] base64 = screenData.getBase64();
 		if(base64==null){return;}
@@ -94,14 +113,9 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			byte[] sequenceNumber = Integer.toString(i + 1, 16).getBytes();
 			int restLength = base64.length-i * sendSize;
 			int sendLength = sendSize<restLength?sendSize:restLength;
-			byte[] sendData = new byte[capturedDate.length + sequenceNumber.length + sequenceCount.length + sendLength + 3];
-			System.arraycopy(capturedDate, 0, sendData, 0, capturedDate.length);
-			System.arraycopy(sequenceNumber, 0, sendData, capturedDate.length + 1, sequenceNumber.length);
-			System.arraycopy(sequenceCount, 0, sendData, capturedDate.length + sequenceNumber.length + 2, sequenceCount.length);
-			System.arraycopy(base64, i * sendSize, sendData, capturedDate.length + sequenceNumber.length + sequenceCount.length + 3, sendLength);
-			sendData[capturedDate.length + 0] = separatorByte;
-			sendData[capturedDate.length + sequenceNumber.length + 1] = separatorByte;
-			sendData[capturedDate.length + sequenceNumber.length + sequenceCount.length + 2] =separatorByte;
+			byte[] imageData = new byte[sendLength];
+			System.arraycopy(base64, i * sendSize, imageData, 0, sendLength);
+			byte[] sendData = makeSendData(capturedDate, sequenceNumber, sequenceCount, imageData);
 			try {
 				outbound.sendMessage((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
 			} catch (IOException e) {
