@@ -1,3 +1,4 @@
+var toolbarHeight=100;
 var imageRequestTimer=null;
 var browser;
 var remote;
@@ -18,11 +19,11 @@ function setImageRequestTimer(milliseconds){
 }
 function onMouseMoveBrowser(eve){
 	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
+	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
 	scrollTo(x,y);
 	eve.stopPropagation();
 	eve.preventDefault();
-	sendMessage(["mousemove",eve.pageX,eve.pageY]);
+	sendMessage(["mousemove",eve.pageX,eve.pageY-toolbarHeight]);
 }
 function onContextMenuBrowser(eve){
 	eve.stopPropagation();
@@ -70,7 +71,7 @@ function onKeyPressImage(eve){
 }
 */
 function onOpenWebSocket(){
-	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
+	remote.addEventListener("mousemove",onMouseMoveBrowser,false);
 	remote.addEventListener("mousedown",onMouseDownImage,false);
 	remote.addEventListener("mouseup",onMouseUpImage,false);
 	remote.addEventListener("mousewheel",onMouseWheelImage,false);
