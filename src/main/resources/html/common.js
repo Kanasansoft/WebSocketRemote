@@ -1,6 +1,7 @@
 var toolbarHeight=100;
 var imageRequestTimer=null;
 var browser;
+var frame;
 var remote;
 var webSocket;
 var receiveIndexes=[];
@@ -19,11 +20,12 @@ function setImageRequestTimer(milliseconds){
 }
 function onMouseMoveBrowser(eve){
 	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
-	scrollTo(x,y);
+	var y=(eve.clientY-toolbarHeight)/(browser.clientHeight-toolbarHeight)*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
+	remote.style.marginTop="-"+y+"px";
+	remote.style.marginLeft="-"+x+"px";
 	eve.stopPropagation();
 	eve.preventDefault();
-	sendMessage(["mousemove",eve.pageX,eve.pageY-toolbarHeight]);
+	sendMessage(["mousemove",eve.offsetX,eve.offsetY]);
 }
 function onContextMenuBrowser(eve){
 	eve.stopPropagation();
@@ -138,9 +140,11 @@ function onUnloadWindow(){
 }
 function initial(eve){
 	browser=document.documentElement;
+	frame=document.getElementById("frame");
 	remote=document.getElementById("remote");
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
+	frame.style.top=toolbarHeight+"px";
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("open",onOpenWebSocket,false);
 	webSocket.addEventListener("close",onCloseWebSocket,false);
