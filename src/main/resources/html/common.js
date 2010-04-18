@@ -1,4 +1,6 @@
 var toolbarHeight=100;
+var cursorX=0;
+var cursorY=0;
 var imageRequestTimer=null;
 var browser;
 var toolbar;
@@ -7,7 +9,12 @@ var remote;
 var webSocket;
 var receiveIndexes=[];
 var receiveData={};
-
+function scrollRemote(){
+	var scrollX=cursorX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
+	var scrollY=(cursorY-toolbarHeight)/(browser.clientHeight-toolbarHeight)*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
+	remote.style.marginTop="-"+scrollY+"px";
+	remote.style.marginLeft="-"+scrollX+"px";
+}
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -21,10 +28,9 @@ function setImageRequestTimer(milliseconds){
 	imageRequestTimer=setTimeout(requestImage,milliseconds);
 }
 function onMouseMoveBrowser(eve){
-	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=(eve.clientY-toolbarHeight)/(browser.clientHeight-toolbarHeight)*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
-	remote.style.marginTop="-"+y+"px";
-	remote.style.marginLeft="-"+x+"px";
+	cursorX=eve.clientX;
+	cursorY=eve.clientY;
+	scrollRemote();
 	eve.stopPropagation();
 	eve.preventDefault();
 	sendMessage(["mousemove",eve.offsetX,eve.offsetY]);
