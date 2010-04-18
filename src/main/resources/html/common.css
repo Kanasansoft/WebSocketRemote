@@ -1,2 +1,3 @@
 body{overflow:hidden;margin:0px;}
+#toolbar{margin:0px;width:100%;position:absolute;background-color:#808080;}
 #frame{overflow:hidden;margin:0px;position:absolute;}

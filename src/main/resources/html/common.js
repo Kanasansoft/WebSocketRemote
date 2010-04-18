@@ -1,11 +1,13 @@
 var toolbarHeight=100;
 var imageRequestTimer=null;
 var browser;
+var toolbar;
 var frame;
 var remote;
 var webSocket;
 var receiveIndexes=[];
 var receiveData={};
+
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -140,10 +142,12 @@ function onUnloadWindow(){
 }
 function initial(eve){
 	browser=document.documentElement;
+	toolbar=document.getElementById("toolbar");
 	frame=document.getElementById("frame");
 	remote=document.getElementById("remote");
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
+	toolbar.style.height=toolbarHeight+"px";
 	frame.style.top=toolbarHeight+"px";
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("open",onOpenWebSocket,false);
