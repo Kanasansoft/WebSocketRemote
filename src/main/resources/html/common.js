@@ -1,4 +1,5 @@
-var toolbarHeight=100;
+var toolbarHeightDefault=100;
+var displayToolbar=false;
 var cursorX=0;
 var cursorY=0;
 var imageRequestTimer=null;
@@ -9,11 +10,18 @@ var remote;
 var webSocket;
 var receiveIndexes=[];
 var receiveData={};
-function scrollRemote(){
+function refresh(){
+	var toolbarHeight=displayToolbar?toolbarHeightDefault:0;
+	toolbar.style.height=toolbarHeight+"px";
+	frame.style.top=toolbarHeight+"px";
 	var scrollX=cursorX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
 	var scrollY=(cursorY-toolbarHeight)/(browser.clientHeight-toolbarHeight)*(remote.offsetHeight-browser.clientHeight+toolbarHeight);
 	remote.style.marginTop="-"+scrollY+"px";
 	remote.style.marginLeft="-"+scrollX+"px";
+}
+function toggleDisplayToolbar(){
+	displayToolbar=!displayToolbar;
+	refresh();
 }
 function sendMessage(data){
 	webSocket.send(data.join(","));
@@ -30,7 +38,7 @@ function setImageRequestTimer(milliseconds){
 function onMouseMoveBrowser(eve){
 	cursorX=eve.clientX;
 	cursorY=eve.clientY;
-	scrollRemote();
+	refresh();
 	eve.stopPropagation();
 	eve.preventDefault();
 	sendMessage(["mousemove",eve.offsetX,eve.offsetY]);
@@ -66,28 +74,29 @@ function onMouseWheelImage(eve){
 	eve.preventDefault();
 	sendMessage(["mousewheel",eve.wheelDelta]);
 }
-/*
 function onKeyDownImage(eve){
 	console.log(eve.keyCode);
 //	sendMessage(["keydown"]);
 }
 function onKeyUpImage(eve){
 	console.log(eve.keyCode);
+	switch(eve.keyCode){
+	case 17:toggleDisplayToolbar();break;
+	}
 //	sendMessage(["keyup"]);
 }
 function onKeyPressImage(eve){
 	console.log(eve.charCode);
 //	sendMessage(["keypress"]);
 }
-*/
 function onOpenWebSocket(){
 	remote.addEventListener("mousemove",onMouseMoveBrowser,false);
 	remote.addEventListener("mousedown",onMouseDownImage,false);
 	remote.addEventListener("mouseup",onMouseUpImage,false);
 	remote.addEventListener("mousewheel",onMouseWheelImage,false);
-//	window.addEventListener("keydown",onKeyDownImage,false);
-//	window.addEventListener("keyup",onKeyUpImage,false);
-//	window.addEventListener("keypress",onKeyPressImage,false);
+	window.addEventListener("keydown",onKeyDownImage,false);
+	window.addEventListener("keyup",onKeyUpImage,false);
+	window.addEventListener("keypress",onKeyPressImage,false);
 	requestImage();
 }
 function onCloseWebSocket(){
@@ -153,8 +162,6 @@ function initial(eve){
 	remote=document.getElementById("remote");
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
-	toolbar.style.height=toolbarHeight+"px";
-	frame.style.top=toolbarHeight+"px";
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
 	webSocket.addEventListener("open",onOpenWebSocket,false);
 	webSocket.addEventListener("close",onCloseWebSocket,false);
@@ -162,5 +169,6 @@ function initial(eve){
 	window.addEventListener("unload",onUnloadWindow,false);
 	browser.addEventListener("contextmenu",onContextMenuBrowser,false);
 	browser.addEventListener("contextmenu",onContextMenuBrowser,true);
+	refresh();
 }
 window.addEventListener("load",initial,false);
