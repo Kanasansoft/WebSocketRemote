@@ -1,0 +1,46 @@
+body{
+	width:100%;
+	height:100%;
+	background-color:#cccccc;
+	overflow:hidden;
+}
+/*
+#status{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0px;
+	left:0px;
+}
+*/
+#pad{
+	width:100%;
+	height:70%;
+	position:fixed;
+	top:0px;
+	left:0px;
+}
+#mouse_main{
+	width:40%;
+	height:30%;
+	background-color:#eeeeee;
+	position:fixed;
+	bottom:0px;
+	left:0px;
+}
+#mouse_wheel{
+	width:20%;
+	height:30%;
+	background-color:#dddddd;
+	position:fixed;
+	bottom:0%;
+	left:40%;
+}
+#mouse_contextmenu{
+	width:40%;
+	height:30%;
+	background-color:#eeeeee;
+	position:fixed;
+	bottom:0%;
+	left:60%;
+}
