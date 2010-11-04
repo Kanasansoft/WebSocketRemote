@@ -2,6 +2,8 @@ package com.kanasansoft.WebSocketRemote;
 
 import java.awt.MenuItem;
 import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -145,6 +147,33 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
 	}
 
+	void onMouseMoveBy(String data){
+
+		if(data==null){return;}
+		if(data.equals("")){return;}
+		String[] messages = data.split(",");
+		if(messages.length!=2){return;}
+
+		int x = Integer.parseInt(messages[0]);
+		int y = Integer.parseInt(messages[1]);
+
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		if(pointerInfo==null){return;}
+		Point mousePoint = pointerInfo.getLocation();
+		x += mousePoint.x;
+		y += mousePoint.y;
+
+		if(screenData==null){return;}
+		Rectangle rect = screenData.getRect();
+		x += rect.x;
+		y += rect.y;
+
+		robot.waitForIdle();
+		robot.mouseMove(x, y);
+		robot.waitForIdle();
+
+	}
+
 	void onMouseDown(String data){
 
 		if(MouseInfo.getPointerInfo()==null){return;}
@@ -241,6 +270,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			sendCaptureImage(outbound);
 		}else if(messageType.equals("mousemoveto")){
 			onMouseMoveTo(messageData);
+		}else if(messageType.equals("mousemoveby")){
+			onMouseMoveBy(messageData);
 		}else if(messageType.equals("mousedown")){
 			onMouseDown(messageData);
 		}else if(messageType.equals("mouseup")){
