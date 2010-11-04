@@ -124,7 +124,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		}
 	}
 
-	void onMouseMove(String data){
+	void onMouseMoveTo(String data){
 
 		if(data==null){return;}
 		if(data.equals("")){return;}
@@ -239,8 +239,8 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		String messageData = messages.length==1?"":messages[1];
 		if(messageType.equals("image")){
 			sendCaptureImage(outbound);
-		}else if(messageType.equals("mousemove")){
-			onMouseMove(messageData);
+		}else if(messageType.equals("mousemoveto")){
+			onMouseMoveTo(messageData);
 		}else if(messageType.equals("mousedown")){
 			onMouseDown(messageData);
 		}else if(messageType.equals("mouseup")){

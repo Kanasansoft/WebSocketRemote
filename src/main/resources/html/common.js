@@ -22,7 +22,7 @@ function onMouseMoveBrowser(eve){
 	scrollTo(x,y);
 	eve.stopPropagation();
 	eve.preventDefault();
-	sendMessage(["mousemove",eve.pageX,eve.pageY]);
+	sendMessage(["mousemoveto",eve.pageX,eve.pageY]);
 }
 function onContextMenuBrowser(eve){
 	eve.stopPropagation();
