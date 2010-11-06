@@ -126,6 +126,23 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		}
 	}
 
+	void sendMousePoint(Outbound outbound){
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		if(pointerInfo==null){return;}
+		Point mousePoint = pointerInfo.getLocation();
+		if(screenData==null){return;}
+		Rectangle rect = screenData.getRect();
+		byte[] messageType = "mousepoint".getBytes();
+		byte[] mouseX = String.valueOf(mousePoint.x-rect.x).getBytes();
+		byte[] mouseY = String.valueOf(mousePoint.y-rect.y).getBytes();
+		byte[] sendData = makeSendData(messageType,mouseX,mouseY);
+		try {
+			outbound.sendMessage((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	void onMouseMoveTo(String data){
 
 		if(data==null){return;}
@@ -270,8 +287,10 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			sendCaptureImage(outbound);
 		}else if(messageType.equals("mousemoveto")){
 			onMouseMoveTo(messageData);
+			sendMousePoint(outbound);
 		}else if(messageType.equals("mousemoveby")){
 			onMouseMoveBy(messageData);
+			sendMousePoint(outbound);
 		}else if(messageType.equals("mousedown")){
 			onMouseDown(messageData);
 		}else if(messageType.equals("mouseup")){
