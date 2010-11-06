@@ -4,6 +4,9 @@ var remote;
 var webSocket;
 var receiveIndexes=[];
 var receiveData={};
+var mouseX=0;
+var mouseY=0;
+var mouseWheel=0;
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -15,6 +18,68 @@ function setImageRequestTimer(milliseconds){
 		clearTimeout(imageRequestTimer);
 	}
 	imageRequestTimer=setTimeout(requestImage,milliseconds);
+}
+function handler(eve){
+	eve.preventDefault();
+}
+function padHandler(eve){
+	switch(eve.type){
+	case "touchstart":
+		if(eve.touches.length!=1){return;}
+		mouseX=eve.touches[0].pageX;
+		mouseY=eve.touches[0].pageY;
+		break;
+	case "touchmove":
+		if(eve.touches.length!=1){return;}
+		sendMessage([
+			"mousemoveby",
+			(eve.touches[0].pageX-mouseX).toString(10),
+			(eve.touches[0].pageY-mouseY).toString(10)
+		]);
+		mouseX=eve.touches[0].pageX;
+		mouseY=eve.touches[0].pageY;
+		break;
+	case "touchend":
+		break;
+	}
+}
+function mouseMainHandler(eve){
+	mouseButtonHandler(eve,"main");
+}
+function mouseContextmenuHandler(eve){
+	mouseButtonHandler(eve,"contextmenu");
+}
+function mouseButtonHandler(eve,button){
+	switch(eve.type){
+	case "touchstart":
+		if(eve.touches.length!=1){return;}
+		sendMessage(["mousedown",button]);
+		break;
+	case "touchmove":
+		break;
+	case "touchend":
+		if(eve.touches.length!=0){return;}
+		sendMessage(["mouseup",button]);
+		break;
+	}
+}
+function mouseWheelHandler(eve){
+	switch(eve.type){
+	case "touchstart":
+		if(eve.touches.length!=1){return;}
+		mouseWheel=eve.touches[0].pageY;
+		break;
+	case "touchmove":
+		if(eve.touches.length!=1){return;}
+		sendMessage([
+			"mousewheel",
+			(eve.touches[0].pageY-mouseWheel).toString(10)
+		]);
+		mouseWheel=eve.touches[0].pageY;
+		break;
+	case "touchend":
+		break;
+	}
 }
 /*
 function onMouseMoveBrowser(eve){
@@ -58,10 +123,15 @@ function onMouseWheelImage(eve){
 }
 */
 function onOpenWebSocket(){
-//	browser.addEventListener("mousemove",onMouseMoveBrowser,false);
-//	remote.addEventListener("mousedown",onMouseDownImage,false);
-//	remote.addEventListener("mouseup",onMouseUpImage,false);
-//	remote.addEventListener("mousewheel",onMouseWheelImage,false);
+	["touchstart","touchmove","touchend","gesturestart","gesturechange","gestureend"].forEach(
+			function(eventName){
+				document.addEventListener(eventName,handler,false);
+				document.getElementById("pad").addEventListener(eventName,padHandler,false);
+				document.getElementById("mouse_main").addEventListener(eventName,mouseMainHandler,false);
+				document.getElementById("mouse_contextmenu").addEventListener(eventName,mouseContextmenuHandler,false);
+				document.getElementById("mouse_wheel").addEventListener(eventName,mouseWheelHandler,false);
+			}
+		);
 	requestImage();
 }
 function onCloseWebSocket(){
