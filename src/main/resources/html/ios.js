@@ -1,5 +1,6 @@
 var imageRequestTimer=null;
 var browser;
+var frame;
 var remote;
 var webSocket;
 var receiveIndexes=[];
@@ -22,7 +23,7 @@ function setImageRequestTimer(milliseconds){
 function handler(eve){
 	eve.preventDefault();
 }
-function padHandler(eve){
+function frameHandler(eve){
 	switch(eve.type){
 	case "touchstart":
 		if(eve.touches.length!=1){return;}
@@ -126,7 +127,7 @@ function onOpenWebSocket(){
 	["touchstart","touchmove","touchend","gesturestart","gesturechange","gestureend"].forEach(
 			function(eventName){
 				document.addEventListener(eventName,handler,false);
-				document.getElementById("pad").addEventListener(eventName,padHandler,false);
+				document.getElementById("frame").addEventListener(eventName,frameHandler,false);
 				document.getElementById("mouse_main").addEventListener(eventName,mouseMainHandler,false);
 				document.getElementById("mouse_contextmenu").addEventListener(eventName,mouseContextmenuHandler,false);
 				document.getElementById("mouse_wheel").addEventListener(eventName,mouseWheelHandler,false);
@@ -192,6 +193,7 @@ function onUnloadWindow(){
 }
 function initial(eve){
 	browser=document.documentElement;
+	frame=document.getElementById("frame");
 	remote=document.getElementById("remote");
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
