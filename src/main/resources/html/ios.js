@@ -153,6 +153,9 @@ function onMessageWebSocket(message){
 	case "image":
 		onMessageWebSocketImage(messageData);
 		break;
+	case "mousepoint":
+		onMessageWebSocketMousePoint(messageData);
+		break;
 	}
 }
 function onMessageWebSocketImage(data){
@@ -187,6 +190,8 @@ function onMessageWebSocketImage(data){
 	}
 	remote.setAttribute("src","data:image/jpg;base64,"+base64);
 	setImageRequestTimer(100);
+}
+function onMessageWebSocketMousePoint(data){
 }
 function onUnloadWindow(){
 	webSocket.close();
