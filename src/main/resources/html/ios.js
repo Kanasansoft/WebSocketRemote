@@ -94,7 +94,7 @@ function mouseWheelHandler(eve){
 		if(eve.touches.length!=1){return;}
 		sendMessage([
 			"mousewheel",
-			(eve.touches[0].pageY-mouseWheel).toString(10)
+			(mouseWheel-eve.touches[0].pageY).toString(10)
 		]);
 		mouseWheel=eve.touches[0].pageY;
 		break;
