@@ -120,7 +120,7 @@ function onMessageWebSocketImage(data){
 		return;
 	}
 	var currentPosition=receiveIndexes.indexOf(capturedDate);
-	deleteIndexes=receiveIndexes.slice(0,currentPosition+1);
+	var deleteIndexes=receiveIndexes.slice(0,currentPosition+1);
 	receiveIndexes=receiveIndexes.slice(currentPosition+2);
 	for(var i=0;i<deleteIndexes.length;i++){
 		delete receiveData[deleteIndexes[i]];
