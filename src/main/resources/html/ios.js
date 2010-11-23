@@ -8,7 +8,15 @@ var receiveData={};
 var mouseX=0;
 var mouseY=0;
 var mouseWheel=0;
-var startScale=1;
+var baseScale;
+var currentScale=1;
+var gestureScale=1;
+var serverMouseX=0;
+var serverMouseY=0;
+var remoteWidth;
+var remoteHeight;
+var frameWidth;
+var frameHeight;
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -46,10 +54,13 @@ function frameHandler(eve){
 	case "gesturestart":
 		break;
 	case "gesturechange":
-		remote.style.webkitTransform="scale("+startScale*eve.scale+")";
+		gestureScale=eve.scale;
+		transformRemoteImage();
 		break;
 	case "gestureend":
-		startScale*=eve.scale;
+		currentScale*=eve.scale;
+		gestureScale=1;
+		transformRemoteImage();
 		break;
 	}
 }
@@ -90,6 +101,29 @@ function mouseWheelHandler(eve){
 	case "touchend":
 		break;
 	}
+}
+function onLoadRemoteImage(){
+	var remoteStyle=document.defaultView.getComputedStyle(remote,"");
+	remoteWidth=parseInt(remoteStyle.width,10);
+	remoteHeight=parseInt(remoteStyle.height,10);
+}
+function onResizeFrame(){
+	var frameStyle=document.defaultView.getComputedStyle(frame,"");
+	frameWidth=parseInt(frameStyle.width,10);
+	frameHeight=parseInt(frameStyle.height,10);
+}
+function calculateBaseScale(){
+	var widthScale=frameWidth/remoteWidth;
+	var heightScale=frameHeight/remoteHeight;
+	baseScale=(widthScale<heightScale)?widthScale:heightScale;
+}
+function transformRemoteImage(){
+	var scale=baseScale*currentScale*gestureScale;
+	remote.style.webkitTransform="scale("+(scale)+")";
+	var baseLeft=(frameWidth-remoteWidth)/2+((scale-frameWidth/remoteWidth)*remoteWidth)/2+(frameWidth-remoteWidth*scale)*(serverMouseX/remoteWidth);
+	var baseTop=(frameHeight-remoteHeight)/2+((scale-frameHeight/remoteHeight)*remoteHeight)/2+(frameHeight-remoteHeight*scale)*(serverMouseY/remoteHeight);
+	remote.style.marginLeft=baseLeft+"px";
+	remote.style.marginTop=baseTop+"px";
 }
 function onOpenWebSocket(){
 	["touchstart","touchmove","touchend","gesturestart","gesturechange","gestureend"].forEach(
@@ -164,16 +198,35 @@ function onMessageWebSocketMousePoint(data){
 	if(splitData.length!=2){
 		return;
 	}
-	var x=parseInt(splitData[0],10);
-	var y=parseInt(splitData[1],10);
+	serverMouseX=parseInt(splitData[0],10);
+	serverMouseY=parseInt(splitData[1],10);
+	transformRemoteImage();
 }
 function onUnloadWindow(){
 	webSocket.close();
 }
 function initial(eve){
+	window.scrollTo(0,0);
 	browser=document.documentElement;
 	frame=document.getElementById("frame");
 	remote=document.getElementById("remote");
+	onLoadRemoteImage();
+	onResizeFrame();
+	calculateBaseScale();
+	transformRemoteImage();
+	remote.style.visibility="visible";
+	remote.addEventListener("load",function(){
+		onLoadRemoteImage();
+		calculateBaseScale();
+		transformRemoteImage();
+	},false);
+	window.addEventListener("orientationchange",function(){
+		window.scrollTo(0,0);
+		setTimeout(window.scrollTo,3000,0,0);
+		onResizeFrame();
+		calculateBaseScale();
+		transformRemoteImage();
+	},false);
 	var protocol=(location.protocol=="https:")?"wss":"ws";
 	var host=location.host;
 	webSocket=new WebSocket(protocol+"://"+host+"/ws/");
@@ -181,5 +234,6 @@ function initial(eve){
 	webSocket.addEventListener("close",onCloseWebSocket,false);
 	webSocket.addEventListener("message",onMessageWebSocket,false);
 	window.addEventListener("unload",onUnloadWindow,false);
+	setTimeout(window.scrollTo,3000,0,0);
 }
 window.addEventListener("load",initial,false);

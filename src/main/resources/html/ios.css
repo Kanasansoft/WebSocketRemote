@@ -21,6 +21,9 @@ body{
 	left:0px;
 	overflow:hidden;
 }
+#remote{
+	visibility:hidden;
+}
 #mouse_main{
 	width:40%;
 	height:30%;
