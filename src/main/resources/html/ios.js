@@ -91,47 +91,6 @@ function mouseWheelHandler(eve){
 		break;
 	}
 }
-/*
-function onMouseMoveBrowser(eve){
-	var x=eve.clientX/browser.clientWidth*(remote.offsetWidth-browser.clientWidth);
-	var y=eve.clientY/browser.clientHeight*(remote.offsetHeight-browser.clientHeight);
-	scrollTo(x,y);
-	eve.stopPropagation();
-	eve.preventDefault();
-	sendMessage(["mousemoveto",eve.pageX,eve.pageY]);
-}
-function onContextMenuBrowser(eve){
-	eve.stopPropagation();
-	eve.preventDefault();
-}
-function onMouseDownImage(eve){
-	var button="";
-	switch(eve.button){
-	case 0:button="main";break;
-	case 1:button="wheel";break;
-	case 2:button="contextmenu";break;
-	}
-	eve.stopPropagation();
-	eve.preventDefault();
-	sendMessage(["mousedown",button]);
-}
-function onMouseUpImage(eve){
-	var button="";
-	switch(eve.button){
-	case 0:button="main";break;
-	case 1:button="wheel";break;
-	case 2:button="contextmenu";break;
-	}
-	eve.stopPropagation();
-	eve.preventDefault();
-	sendMessage(["mouseup",button]);
-}
-function onMouseWheelImage(eve){
-	eve.stopPropagation();
-	eve.preventDefault();
-	sendMessage(["mousewheel",eve.wheelDelta]);
-}
-*/
 function onOpenWebSocket(){
 	["touchstart","touchmove","touchend","gesturestart","gesturechange","gestureend"].forEach(
 			function(eventName){
