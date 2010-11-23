@@ -201,6 +201,12 @@ function onMessageWebSocketImage(data){
 	setImageRequestTimer(100);
 }
 function onMessageWebSocketMousePoint(data){
+	var splitData=data.split("_");
+	if(splitData.length!=2){
+		return;
+	}
+	var x=parseInt(splitData[0],10);
+	var y=parseInt(splitData[1],10);
 }
 function onUnloadWindow(){
 	webSocket.close();
