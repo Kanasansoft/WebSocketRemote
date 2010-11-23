@@ -8,6 +8,7 @@ var receiveData={};
 var mouseX=0;
 var mouseY=0;
 var mouseWheel=0;
+var startScale=1;
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -41,6 +42,14 @@ function frameHandler(eve){
 		mouseY=eve.touches[0].pageY;
 		break;
 	case "touchend":
+		break;
+	case "gesturestart":
+		break;
+	case "gesturechange":
+		remote.style.webkitTransform="scale("+startScale*eve.scale+")";
+		break;
+	case "gestureend":
+		startScale*=eve.scale;
 		break;
 	}
 }
