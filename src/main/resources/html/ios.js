@@ -54,11 +54,13 @@ function frameHandler(eve){
 	case "gesturestart":
 		break;
 	case "gesturechange":
-		gestureScale=eve.scale;
+		if(currentScale*eve.scale>=1){
+			gestureScale=eve.scale;
+		}
 		transformRemoteImage();
 		break;
 	case "gestureend":
-		currentScale*=eve.scale;
+		currentScale=currentScale*eve.scale<1?1:currentScale*eve.scale;
 		gestureScale=1;
 		transformRemoteImage();
 		break;
