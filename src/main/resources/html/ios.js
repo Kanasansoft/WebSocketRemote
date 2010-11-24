@@ -122,8 +122,14 @@ function calculateBaseScale(){
 function transformRemoteImage(){
 	var scale=baseScale*currentScale*gestureScale;
 	remote.style.webkitTransform="scale("+(scale)+")";
-	var baseLeft=(frameWidth-remoteWidth)/2+((scale-frameWidth/remoteWidth)*remoteWidth)/2+(frameWidth-remoteWidth*scale)*(serverMouseX/remoteWidth);
-	var baseTop=(frameHeight-remoteHeight)/2+((scale-frameHeight/remoteHeight)*remoteHeight)/2+(frameHeight-remoteHeight*scale)*(serverMouseY/remoteHeight);
+	var baseLeft=(frameWidth-remoteWidth)/2;
+	if(frameWidth<remoteWidth*scale){
+		baseLeft+=(frameWidth-remoteWidth*scale)*(serverMouseX/remoteWidth-0.5);
+	}
+	var baseTop=(frameHeight-remoteHeight)/2;
+	if(frameHeight<remoteHeight*scale){
+		baseTop+=(frameHeight-remoteHeight*scale)*(serverMouseY/remoteHeight-0.5);
+	}
 	remote.style.marginLeft=baseLeft+"px";
 	remote.style.marginTop=baseTop+"px";
 }
