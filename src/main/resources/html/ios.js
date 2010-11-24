@@ -41,11 +41,14 @@ function frameHandler(eve){
 		break;
 	case "touchmove":
 		if(eve.touches.length!=1){return;}
-		sendMessage([
-			"mousemoveby",
-			(eve.touches[0].pageX-mouseX).toString(10),
-			(eve.touches[0].pageY-mouseY).toString(10)
-		]);
+		var x=eve.touches[0].pageX-mouseX;
+		var y=eve.touches[0].pageY-mouseY;
+		var distance=Math.pow(x*x+y*y,1/2);
+		if(distance>100){
+			x+=(distance-100)*(x>0?1:-1)*2;
+			y+=(distance-100)*(y>0?1:-1)*2;
+		}
+		sendMessage(["mousemoveby",Math.round(x).toString(10),Math.round(y).toString(10)]);
 		mouseX=eve.touches[0].pageX;
 		mouseY=eve.touches[0].pageY;
 		break;
