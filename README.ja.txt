@@ -27,7 +27,8 @@ WebSocketRemoteのアイコンが表示されていれば、実行中となり�
 
 == 使い方
 
-クライアント側からウェブブラウザで"http:[server address]:40320/"にアクセスして下さい。
+クライアント側からウェブブラウザで、"http:[server address]:40320/"にアクセスして下さい。
+iOS(4.2.1以降)のSafariからは、"http:[server address]:40320/ios.html"にアクセスして下さい。
 
 == 終了
 

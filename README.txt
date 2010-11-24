@@ -28,6 +28,7 @@ Running sign is display WebSocketRemote icon.
 == HOW TO USE
 
 Access "http:[server address]:40320/" by Web Browser from client side.
+Access "http:[server address]:40320/ios.html" by Web Browser from iOS(>=v4.2.1).
 
 == QUIT
 
