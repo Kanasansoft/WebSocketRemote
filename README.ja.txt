@@ -30,6 +30,11 @@ WebSocketRemoteのアイコンが表示されていれば、実行中となり�
 クライアント側からウェブブラウザで、"http:[server address]:40320/"にアクセスして下さい。
 iOS(4.2.1以降)のSafariからは、"http:[server address]:40320/ios.html"にアクセスして下さい。
 
+== iOS用モード
+
+"http:[server address]:40320/ios.html?mode=remote"にアクセスするとリモートモードになります。(デフォルト値)
+"http:[server address]:40320/ios.html?mode=mouse"にアクセスするとマウスモードになります。(キャプチャ画像は受信しません)
+
 == 終了
 
 WebSocketRemoteのiconを右クリックします。

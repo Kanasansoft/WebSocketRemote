@@ -30,6 +30,11 @@ Running sign is display WebSocketRemote icon.
 Access "http:[server address]:40320/" by Web Browser from client side.
 Access "http:[server address]:40320/ios.html" by Web Browser from iOS(>=v4.2.1).
 
+== MODE for iOS
+
+Access "http:[server address]:40320/ios.html?mode=remote" by remote mode. (default)
+Access "http:[server address]:40320/ios.html?mode=mouse" by mouse mode. (not receive capture image)
+
 == QUIT
 
 Right click WebSocketRemote icon.
