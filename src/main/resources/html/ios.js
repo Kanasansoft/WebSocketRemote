@@ -61,9 +61,12 @@ function frameHandler(eve){
 		var x=eve.touches[0].pageX-mouseX;
 		var y=eve.touches[0].pageY-mouseY;
 		var distance=Math.pow(x*x+y*y,1/2);
-		if(distance>100){
-			x+=(distance-100)*(x>0?1:-1)*2;
-			y+=(distance-100)*(y>0?1:-1)*2;
+		if(distance>10){
+			x*=4;
+			y*=4;
+		}else if(distance>5){
+			x*=2;
+			y*=2;
 		}
 		sendMessage(["mousemoveby",Math.round(x).toString(10),Math.round(y).toString(10)]);
 		mouseX=eve.touches[0].pageX;
