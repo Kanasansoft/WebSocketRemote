@@ -1,3 +1,5 @@
+var parameters;
+var mode;
 var imageRequestTimer=null;
 var browser;
 var frame;
@@ -17,6 +19,21 @@ var remoteWidth;
 var remoteHeight;
 var frameWidth;
 var frameHeight;
+function getParameters(){
+	var data={};
+	var params=location.search.replace(/^\?/,"").split("&");
+	for(var i=0;i<params.length;i++){
+		var keyvalue=params[i].split("=");
+		if(keyvalue.length!=2){continue;}
+		var key=decodeURIComponent(keyvalue[0]);
+		var value=decodeURIComponent(keyvalue[1]);
+		if(!data.hasOwnProperty(key)){
+			data[key]=[];
+		}
+		data[key].push(value);
+	}
+	return data;
+}
 function sendMessage(data){
 	webSocket.send(data.join(","));
 }
@@ -60,12 +77,16 @@ function frameHandler(eve){
 		if(currentScale*eve.scale>=1){
 			gestureScale=eve.scale;
 		}
-		transformRemoteImage();
+		if(mode=="remote"){
+			transformRemoteImage();
+		}
 		break;
 	case "gestureend":
 		currentScale=currentScale*eve.scale<1?1:currentScale*eve.scale;
 		gestureScale=1;
-		transformRemoteImage();
+		if(mode=="remote"){
+			transformRemoteImage();
+		}
 		break;
 	}
 }
@@ -146,7 +167,9 @@ function onOpenWebSocket(){
 				document.getElementById("mouse_wheel").addEventListener(eventName,mouseWheelHandler,false);
 			}
 		);
-	requestImage();
+	if(mode=="remote"){
+		requestImage();
+	}
 }
 function onCloseWebSocket(){
 }
@@ -211,12 +234,16 @@ function onMessageWebSocketMousePoint(data){
 	}
 	serverMouseX=parseInt(splitData[0],10);
 	serverMouseY=parseInt(splitData[1],10);
-	transformRemoteImage();
+	if(mode=="remote"){
+		transformRemoteImage();
+	}
 }
 function onUnloadWindow(){
 	webSocket.close();
 }
 function initial(eve){
+	parameters=getParameters();
+	mode=parameters["mode"]?parameters["mode"][0]:"remote";
 	window.scrollTo(0,0);
 	browser=document.documentElement;
 	frame=document.getElementById("frame");
