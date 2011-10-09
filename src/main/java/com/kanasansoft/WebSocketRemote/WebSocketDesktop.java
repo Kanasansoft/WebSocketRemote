@@ -33,24 +33,4 @@ class WebSocketDesktop implements WebSocket {
 	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
 		onMessageObserver.onMessage(this.outbound, frame, data, offset, length);
 	}
-	@Deprecated
-	synchronized static public void sendMessageAll(byte frame, String data) {
-		for(WebSocketDesktop client : clients){
-			try {
-				client.outbound.sendMessage(frame, data);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	@Deprecated
-	synchronized static public void sendMessageAll(byte frame, byte[] data, int offset, int length) {
-		for(WebSocketDesktop client : clients){
-			try {
-				client.outbound.sendMessage(frame, data, offset, length);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 }

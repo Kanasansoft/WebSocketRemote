@@ -266,16 +266,6 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	}
 
 	@Override
-	@Deprecated
-	synchronized public void onMessage(byte frame, String data) {
-	}
-
-	@Override
-	@Deprecated
-	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
-	}
-
-	@Override
 	synchronized public void onMessage(Outbound outbound, byte frame, String data) {
 		if(data==null){return;}
 		if(data.equals("")){return;}
