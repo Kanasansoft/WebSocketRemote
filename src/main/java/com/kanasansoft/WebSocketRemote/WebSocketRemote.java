@@ -22,8 +22,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.websocket.WebSocket;
-import org.eclipse.jetty.websocket.WebSocket.Outbound;
+import org.eclipse.jetty.websocket.WebSocket.Connection;
 
 public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 
@@ -98,7 +97,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		return sendData;
 	}
 
-	void sendCaptureImage(Outbound outbound){
+	void sendCaptureImage(Connection connection){
 		if(screenData==null){return;}
 		byte[] base64 = screenData.getBase64();
 		if(base64==null){return;}
@@ -119,14 +118,14 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 			System.arraycopy(base64, i * sendSize, imageData, 0, sendLength);
 			byte[] sendData = makeSendData(messageType, capturedDate, sequenceNumber, sequenceCount, imageData);
 			try {
-				outbound.sendMessage((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
+				connection.sendMessage(new String(sendData));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	void sendMousePoint(Outbound outbound){
+	void sendMousePoint(Connection connection){
 		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
 		if(pointerInfo==null){return;}
 		Point mousePoint = pointerInfo.getLocation();
@@ -137,7 +136,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		byte[] mouseY = String.valueOf(mousePoint.y-rect.y).getBytes();
 		byte[] sendData = makeSendData(messageType,mouseX,mouseY);
 		try {
-			outbound.sendMessage((byte)WebSocket.SENTINEL_FRAME, sendData,0,sendData.length);
+			connection.sendMessage(new String(sendData));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -266,7 +265,7 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 	}
 
 	@Override
-	synchronized public void onMessage(Outbound outbound, byte frame, String data) {
+	synchronized public void onMessage(Connection connection, String data) {
 		if(data==null){return;}
 		if(data.equals("")){return;}
 		String[] messages = data.split(",",2);
@@ -274,13 +273,13 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		String messageType = messages[0];
 		String messageData = messages.length==1?"":messages[1];
 		if(messageType.equals("image")){
-			sendCaptureImage(outbound);
+			sendCaptureImage(connection);
 		}else if(messageType.equals("mousemoveto")){
 			onMouseMoveTo(messageData);
-			sendMousePoint(outbound);
+			sendMousePoint(connection);
 		}else if(messageType.equals("mousemoveby")){
 			onMouseMoveBy(messageData);
-			sendMousePoint(outbound);
+			sendMousePoint(connection);
 		}else if(messageType.equals("mousedown")){
 			onMouseDown(messageData);
 		}else if(messageType.equals("mouseup")){
@@ -288,10 +287,6 @@ public class WebSocketRemote implements OnMessageObserver, OnCaptureObserver{
 		}else if(messageType.equals("mousewheel")){
 			onMouseWheel(messageData);
 		}
-	}
-
-	@Override
-	synchronized public void onMessage(Outbound outbound, byte frame, byte[] data, int offset, int length) {
 	}
 
 	@Override

@@ -1,36 +1,31 @@
 package com.kanasansoft.WebSocketRemote;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.eclipse.jetty.websocket.WebSocket;
 
-class WebSocketDesktop implements WebSocket {
+class WebSocketDesktop implements WebSocket.OnTextMessage {
 	OnMessageObserver onMessageObserver = null;
 	static Set<WebSocketDesktop> clients = new CopyOnWriteArraySet<WebSocketDesktop>();
-	Outbound outbound;
+	Connection connection;
 	public WebSocketDesktop(OnMessageObserver onMessageObserver) {
 		super();
 		this.onMessageObserver = onMessageObserver;
 	}
 	@Override
-	public void onConnect(Outbound outbound) {
+	public void onOpen(Connection connection) {
 		System.out.println("connect : "+this);
-		this.outbound = outbound;
+		this.connection = connection;
 		clients.add(this);
 	}
 	@Override
-	public void onDisconnect() {
+	public void onClose(int closeCode, String message) {
 		System.out.println("disconnect : "+this);
 		clients.remove(this);
 	}
 	@Override
-	synchronized public void onMessage(byte frame, String data) {
-		onMessageObserver.onMessage(this.outbound, frame, data);
-	}
-	@Override
-	synchronized public void onMessage(byte frame, byte[] data, int offset, int length) {
-		onMessageObserver.onMessage(this.outbound, frame, data, offset, length);
+	synchronized public void onMessage(String data) {
+		onMessageObserver.onMessage(this.connection, data);
 	}
 }

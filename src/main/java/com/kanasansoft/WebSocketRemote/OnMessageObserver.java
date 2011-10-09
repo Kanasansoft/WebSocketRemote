@@ -1,8 +1,7 @@
 package com.kanasansoft.WebSocketRemote;
 
-import org.eclipse.jetty.websocket.WebSocket.Outbound;
+import org.eclipse.jetty.websocket.WebSocket.Connection;
 
 public interface OnMessageObserver {
-	void onMessage(Outbound outbound, byte frame, String data);
-	void onMessage(Outbound outbound, byte frame, byte[] data, int offset, int length);
+	void onMessage(Connection connection, String data);
 }
